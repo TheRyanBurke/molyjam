@@ -48,7 +48,8 @@ namespace molyjam
             // TODO: Add your initialization logic here
             civilians = new List<Civilian>();
 
-
+            Constants.screenWidth = GraphicsDevice.Viewport.Width;
+            Constants.screenHeight = GraphicsDevice.Viewport.Height;
 
             base.Initialize();
         }

@@ -53,9 +53,23 @@ namespace molyjam
             headingChangeMillis = gen.Next(500,1000);
         }
 
+        public void moveCivilian()
+        {
+            this.moveEntity(Heading * speed);
+            float modHeadingX = 1;
+            float modHeadingY = 1;
+            if (Origin.X == 0 || Origin.X == Constants.screenWidth)
+                modHeadingX = -1;
+            if (Origin.Y == 0 || Origin.Y == Constants.screenHeight)
+                modHeadingY = -1;
+            Vector2 newHeading = new Vector2(modHeadingX * Heading.X, modHeadingY * Heading.Y);
+            Heading = newHeading;
+
+        }
+
         public void Update()
         {
-            this.moveEntity(this.Heading * speed);
+            this.moveCivilian();
             if ((lifeTime.ElapsedMilliseconds >= headingChangeMillis) && this.civilianState == CivilianStates.Default)
             {
                 Random gen = new Random();

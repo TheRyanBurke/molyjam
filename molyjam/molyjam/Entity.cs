@@ -39,8 +39,8 @@ namespace molyjam
 
         public void moveEntity(Vector2 vector)
         {
-            origin.X += vector.X;
-            origin.Y -= vector.Y;
+            origin.X = MathHelper.Clamp(origin.X + vector.X, 0, Constants.screenWidth);
+            origin.Y = MathHelper.Clamp(origin.Y - vector.Y, 0, Constants.screenHeight);
         }
 
         public Rectangle getDrawArea()
@@ -48,6 +48,14 @@ namespace molyjam
             Rectangle area = this.texture.Bounds;
             area.Offset(Convert.ToInt32(this.origin.X), Convert.ToInt32(this.origin.Y));
             return area;
+        }
+
+        public bool detectCollision(Entity e)
+        {
+            bool collision = false;
+            Rectangle thisArea = getDrawArea();
+            e.getDrawArea().Intersects(ref thisArea, out collision);
+            return collision;
         }
     }
 }
