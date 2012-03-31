@@ -34,5 +34,12 @@ namespace molyjam
             origin.X += vector.X;
             origin.Y -= vector.Y;
         }
+
+        public Rectangle getDrawArea()
+        {
+            Rectangle area = this.texture.Bounds;
+            area.Offset(Convert.ToInt32(this.origin.X), Convert.ToInt32(this.origin.Y));
+            return area;
+        }
     }
 }
