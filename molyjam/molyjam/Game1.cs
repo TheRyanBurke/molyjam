@@ -22,6 +22,8 @@ namespace molyjam
         List<Civilian> civilians;
         Player player;
 
+        float keyboardSpeed = 1.0f; // Constant for Keyboard speed. Should be dropped into a static class at some point, or abandoned altogether.
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -86,6 +88,32 @@ namespace molyjam
             GamePadState gps = GamePad.GetState(PlayerIndex.One);
             KeyboardState kbs = Keyboard.GetState();
             Vector2 leftStick = gps.ThumbSticks.Left;
+
+            #region KeyboardMovementBlock
+            // Keyboard movement block. Added temporarily for debugging.
+            // Does not reset leftStick between updates, since it is local and initialized to Vector2.Zero (gps.Thumbsticks.Left with no gamepad)
+            Keys[] keyList = Keyboard.GetState().GetPressedKeys();
+            for (int i = 0; i < keyList.Length; i++)
+            {
+                switch (keyList[i])
+                {
+                    case Keys.Down:
+                        leftStick += new Vector2(0f, -1 * keyboardSpeed);
+                        break;
+                    case Keys.Up:
+                        leftStick += new Vector2(0f, keyboardSpeed);
+                        break;
+                    case Keys.Left:
+                        leftStick += new Vector2(-1 * keyboardSpeed, 0f);
+                        break;
+                    case Keys.Right:
+                        leftStick += new Vector2(keyboardSpeed, 0f);
+                        break;
+                }
+            }
+            // Keyboard movement block end 
+            #endregion
+            
             player.moveEntity(leftStick);
 
             base.Update(gameTime);
