@@ -78,6 +78,7 @@ namespace molyjam
         public void getShot()
         {
             shot = true;
+            CivilianState = CivilianStates.Dead;
         }
 
         public void moveCivilian()

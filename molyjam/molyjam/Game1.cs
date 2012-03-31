@@ -67,7 +67,7 @@ namespace molyjam
 
             // TODO: use this.Content to load your game content here
             player_tex = Content.Load<Texture2D>("player");
-            civ_tex1 = Content.Load<Texture2D>("civ1");
+            civ_tex1 = Content.Load<Texture2D>("civ1-32");
             bullet_tex = Content.Load<Texture2D>("bullet");
 
             player = new Player(new Vector2(50f, 50f), player_tex);
@@ -201,9 +201,10 @@ namespace molyjam
                     border.X -= 5;
                     border.Y -= 5;
                     border.Width += 10;
-                    border.Height += 10;                    
+                    border.Height += 10;
                     spriteBatch.Draw(targetBorder, border, Color.White);
                 }
+
                 spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
             }
 

@@ -57,5 +57,10 @@ namespace molyjam
             e.getDrawArea().Intersects(ref thisArea, out collision);
             return collision;
         }
+
+        public bool isCivilianNotPlayer()
+        {
+            return (this is Civilian && !(this is Player));
+        }
     }
 }
