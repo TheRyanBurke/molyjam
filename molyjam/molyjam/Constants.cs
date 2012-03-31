@@ -9,5 +9,11 @@ namespace molyjam
     {
         public static int screenWidth;
         public static int screenHeight;
+
+        public static int SHOOT_INTERVAL = 3;
+
+        public static int DEFAULT_BULLET_RICOCHETS = 0;
+
+        public static float TARGET_RANGE = 200f;
     }
 }

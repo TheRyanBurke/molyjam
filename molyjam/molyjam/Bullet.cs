@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
 namespace molyjam
 {
@@ -16,23 +17,25 @@ namespace molyjam
             set { speed = value; }
         }
 
+        Stopwatch lifetime;
         int ricochetsRemaining;
 
 
-        public Bullet(Vector2 origin, Texture2D texture, Vector2 heading)
+        public Bullet(Vector2 origin, Texture2D texture, Vector2 heading, int ricochets)
             : base(origin, texture)
         {
             Heading = heading;
             speed = 10f;
-            ricochetsRemaining = 0;
+            ricochetsRemaining = ricochets;
+            lifetime = Stopwatch.StartNew();
         }
 
-        public bool update()
+        public bool update(List<Entity> entities)
         {
-            return moveBullet();
+            return moveBullet(entities);
         }
 
-        public bool moveBullet()
+        public bool moveBullet(List<Entity> entities)
         {
             bool expired = false;
             this.moveEntity(Heading * speed);
@@ -58,6 +61,25 @@ namespace molyjam
             Heading = newHeading;
             if (ricochetsRemaining < 0)
                 expired = true;
+
+            foreach (Entity e in entities)
+            {
+                if (!(e.Equals(this)) && e.detectCollision(this))
+                {
+                    if (e is Player && lifetime.Elapsed.Milliseconds > 500)
+                    {
+                        ((Player)e).getShot();
+                        return true;
+                    }
+                    if (e is Civilian && !(e is Player))
+                    {
+                        ((Civilian)e).getShot();
+                        return true;
+                    }
+                    //TODO may need to revisit so bullet can ricochet off non-civilian entities
+                }
+            }
+
             return expired;
         }
     }

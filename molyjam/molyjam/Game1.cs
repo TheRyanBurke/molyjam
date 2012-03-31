@@ -27,7 +27,6 @@ namespace molyjam
         Texture2D targetBorder;
 
         int timeOfLastShot = 0;
-        const int SHOOT_INTERVAL = 3;
 
         Texture2D civ_tex1;
         Texture2D player_tex;
@@ -108,16 +107,6 @@ namespace molyjam
                 this.Exit();
 
             // TODO: Add your update logic here
-
-            if (gameTime.TotalGameTime.Seconds % SHOOT_INTERVAL == 0 && gameTime.TotalGameTime.Seconds - timeOfLastShot > 1)
-            {
-                timeOfLastShot = gameTime.TotalGameTime.Seconds;
-                Vector2 bulletHeading = player.shoot();
-                if(!(player.Target is Player))
-                    bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading));
-            }
-
-
             GamePadState gps = GamePad.GetState(PlayerIndex.One);
             KeyboardState kbs = Keyboard.GetState();
             Vector2 leftStick = gps.ThumbSticks.Left;
@@ -147,21 +136,39 @@ namespace molyjam
             // Keyboard movement block end 
             #endregion
             
+            //move player
             player.moveEntity(leftStick);
+
+            //move civilians
             foreach (Civilian civilian in civilians)
             {
                 civilian.Update(player);
             }
 
+            //acquireTarget should come before bullet updates
+            player.acquireTarget(civilians);
+
+            // bullet.update() returns true if the bullet has run out of ricochets
             List<Bullet> remainingBullets = new List<Bullet>();
+            List<Entity> allEntities = new List<Entity>();
+            allEntities.AddRange(civilians);
+            allEntities.AddRange(bullets);
+            allEntities.Add(player);
             foreach (Bullet b in bullets)
             {
-                if (!b.update())
+                if (!b.update(allEntities))
                     remainingBullets.Add(b);
             }
-            bullets = remainingBullets;
+            bullets = remainingBullets;            
 
-            player.acquireTarget(civilians);
+            //bullet fire should be last event in engine loop
+            if (gameTime.TotalGameTime.Seconds % Constants.SHOOT_INTERVAL == 0 && gameTime.TotalGameTime.Seconds - timeOfLastShot > 1)
+            {
+                timeOfLastShot = gameTime.TotalGameTime.Seconds;
+                Vector2 bulletHeading = player.shoot();
+                if (!(player.Target is Player))
+                    bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, Constants.DEFAULT_BULLET_RICOCHETS));
+            }
 
             base.Update(gameTime);
         }

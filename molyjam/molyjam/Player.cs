@@ -41,7 +41,7 @@ namespace molyjam
                 }
             }
             
-            if (distanceToCivilian(target) > 100f)
+            if (distanceToCivilian(target) > Constants.TARGET_RANGE)
             {
                 target = this;
             }
@@ -52,7 +52,8 @@ namespace molyjam
          */
         public Vector2 shoot()
         {
-            target.getShot();
+            if(target is Player)
+                target.getShot();  
             
             double x = (target.Origin.X - this.Origin.X);// / Math.Sqrt(target.Origin.X * target.Origin.X + this.Origin.X * this.Origin.X);
             double y = (target.Origin.Y - this.Origin.Y);// / Math.Sqrt(target.Origin.Y * target.Origin.Y + this.Origin.Y * this.Origin.Y);
