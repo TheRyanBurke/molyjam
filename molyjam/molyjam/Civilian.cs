@@ -18,6 +18,13 @@ namespace molyjam
         long headingChangeMillis;       // Stopwatch.elapsedMilliseconds at which next heading change occurs.
 
 
+        bool shot;
+        public bool Shot
+        {
+            get { return shot; }
+            set { shot = value; }
+        }
+
         public Civilian(Vector2 origin, Texture2D texture)
             : base(origin, texture)
         {
@@ -25,7 +32,12 @@ namespace molyjam
             lifeTime.Reset();
 
             this.Heading = new Vector2(0, 1);
+            shot = false;
+        }
 
+        public void getShot()
+        {
+            shot = true;
         }
 
         public Civilian(Vector2 origin, Vector2 heading, CivilianStates state, Texture2D texture, float speed = 1.0f) // Constructor Override, allows the state to be set

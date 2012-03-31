@@ -18,11 +18,16 @@ namespace molyjam
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont font;
 
         List<Civilian> civilians;
         Player player;
 
         Texture2D targetBorder;
+
+        int timeOfLastShot = 0;
+        const int SHOOT_INTERVAL = 3;
+
 
        
 
@@ -70,6 +75,8 @@ namespace molyjam
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
+
+            font = Content.Load<SpriteFont>("SpriteFont1");
         }
 
         /// <summary>
@@ -94,6 +101,14 @@ namespace molyjam
                 this.Exit();
 
             // TODO: Add your update logic here
+
+            if (gameTime.TotalGameTime.Seconds % SHOOT_INTERVAL == 0 && gameTime.TotalGameTime.Seconds - timeOfLastShot > 1)
+            {
+                player.shoot();
+                timeOfLastShot = gameTime.TotalGameTime.Seconds;
+            }
+
+
             GamePadState gps = GamePad.GetState(PlayerIndex.One);
             KeyboardState kbs = Keyboard.GetState();
             Vector2 leftStick = gps.ThumbSticks.Left;
@@ -154,11 +169,15 @@ namespace molyjam
             foreach(Civilian c in allPeople) {
                 if (player.Target.Equals(c))
                 {
+                    if (c.Shot)
+                        targetBorder.SetData(new[] { Color.Red });
+                    else
+                        targetBorder.SetData(new[] { Color.White });
                     Rectangle border = c.getDrawArea();
                     border.X -= 5;
                     border.Y -= 5;
                     border.Width += 10;
-                    border.Height += 10;
+                    border.Height += 10;                    
                     spriteBatch.Draw(targetBorder, border, Color.White);
                 }
                 spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
