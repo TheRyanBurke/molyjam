@@ -47,6 +47,11 @@ namespace molyjam
             }
         }
 
+        public void shoot()
+        {
+            target.getShot();
+        }
+
         private float distanceToCivilian(Civilian c)
         {
             return (this.Origin - c.Origin).Length();
