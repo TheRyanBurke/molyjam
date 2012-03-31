@@ -141,15 +141,7 @@ namespace molyjam
             player.moveEntity(leftStick);
             foreach (Civilian civilian in civilians)
             {
-                // Set state to alarmed if player is close
-                if (Math.Abs((civilian.Origin - player.Origin).Length()) < 200 && civilian.CivilianState != Civilian.CivilianStates.Alarmed)
-                {
-                    // Refactor into a state change method in Civilian.cs
-                    civilian.CivilianState = Civilian.CivilianStates.Alarmed;
-                    civilian.Speed = civilian.Speed * 2.0f;
-
-                }
-                civilian.Update();
+                civilian.Update(player);
             }
 
             player.acquireTarget(civilians);
