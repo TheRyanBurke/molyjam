@@ -189,10 +189,16 @@ namespace molyjam
                         bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, Constants.DEFAULT_BULLET_RICOCHETS));
                 }
 
+                int numDeadCivilians = 0;
                 foreach (Civilian c in civilians)
                 {
                     if (c.CivilianState == Civilian.CivilianStates.Dead)
-                        gameover = true;
+                        numDeadCivilians++;
+                }
+
+                if (numDeadCivilians >= Constants.MAX_DEAD_CIVILIANS)
+                {
+                    gameover = true;
                 }
 
 

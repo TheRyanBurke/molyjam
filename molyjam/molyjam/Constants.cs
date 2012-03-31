@@ -15,5 +15,7 @@ namespace molyjam
         public static int DEFAULT_BULLET_RICOCHETS = 0;
 
         public static float TARGET_RANGE = 200f;
+
+        public static int MAX_DEAD_CIVILIANS = 1;
     }
 }
