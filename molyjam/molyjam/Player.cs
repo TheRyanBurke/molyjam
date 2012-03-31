@@ -38,6 +38,12 @@ namespace molyjam
             health = 3;
         }
 
+        public void move(Vector2 vector, List<Entity> entities)
+        {
+
+            this.moveEntity(vector, entities);
+        }
+
         public void acquireTarget(List<Civilian> civs)
         {
             target = civs.ElementAt(0);

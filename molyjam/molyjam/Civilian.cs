@@ -37,10 +37,10 @@ namespace molyjam
                     switch (value)
                     {
                         case CivilianStates.Alarmed:
-                            speed = 5.0f;
+                            speed = Constants.CIVILIAN_SPEED_ALARMED;
                             break;
                         default:
-                            speed = 3.0f;
+                            speed = Constants.CIVILIAN_SPEED_NORMAL;
                             break;
                     }
                     #endregion
@@ -81,21 +81,29 @@ namespace molyjam
             CivilianState = CivilianStates.Dead;
         }
 
-        public void moveCivilian()
+        public void moveCivilian(List<Entity> entities)
         {
-            this.moveEntity(Heading * speed);
+            
             float modHeadingX = 1;
             float modHeadingY = 1;
-            if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width))
+            bool entityCollision = false;
+            foreach (Entity e in entities)
+            {
+                if (!this.Equals(e) && this.detectCollision(e))
+                    entityCollision = true;
+                break;
+            }
+            if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width) || entityCollision)
                 modHeadingX = -1;
-            if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height))
+            if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height) || entityCollision)
                 modHeadingY = -1;
             Vector2 newHeading = new Vector2(modHeadingX * Heading.X, modHeadingY * Heading.Y);
             Heading = newHeading;
+            this.moveEntity(Heading * speed, entities);
 
         }
 
-        public void Update(Player player)
+        public void Update(Player player, List<Entity> entities)
         {
             if (civilianState != CivilianStates.Dead)
             {
@@ -138,7 +146,7 @@ namespace molyjam
                     headingChangeMillis = lifeTime.ElapsedMilliseconds + gen.Next(500, 1000);
                 }
 
-                moveCivilian();
+                moveCivilian(entities);
             }
         }
     }

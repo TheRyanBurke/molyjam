@@ -37,16 +37,29 @@ namespace molyjam
             texture = _texture;
         }
 
-        public void moveEntity(Vector2 vector)
+        public void moveEntity(Vector2 vector, List<Entity> entities)
         {
+            Vector2 oldPosition = new Vector2(Origin.X, Origin.Y);
             origin.X = MathHelper.Clamp(origin.X + vector.X, 0, Constants.screenWidth);
             origin.Y = MathHelper.Clamp(origin.Y - vector.Y, 0, Constants.screenHeight);
+
+            foreach(Entity e in entities)
+            {
+                if (isCivilianNotPlayer() && !this.Equals(e) && this.detectCollision(e))
+                    origin = oldPosition;
+            }
+
         }
 
         public Rectangle getDrawArea()
         {
+            return getDrawAreaWithOrigin(Origin);
+        }
+
+        public Rectangle getDrawAreaWithOrigin(Vector2 o)
+        {
             Rectangle area = this.texture.Bounds;
-            area.Offset(Convert.ToInt32(this.origin.X), Convert.ToInt32(this.origin.Y));
+            area.Offset(Convert.ToInt32(o.X), Convert.ToInt32(o.Y));
             return area;
         }
 

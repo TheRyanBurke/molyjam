@@ -76,6 +76,7 @@
     <Compile Include="Civilian.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="EnvironmentalObject.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

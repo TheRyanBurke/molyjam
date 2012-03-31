@@ -10,13 +10,6 @@ namespace molyjam
 {
     class Bullet : Entity
     {
-        float speed;
-        public float Speed
-        {
-            get { return speed; }
-            set { speed = value; }
-        }
-
         Stopwatch lifetime;
         int ricochetsRemaining;
 
@@ -25,7 +18,6 @@ namespace molyjam
             : base(origin, texture)
         {
             Heading = heading;
-            speed = 10f;
             ricochetsRemaining = ricochets;
             lifetime = Stopwatch.StartNew();
         }
@@ -38,7 +30,7 @@ namespace molyjam
         public bool moveBullet(List<Entity> entities)
         {
             bool expired = false;
-            this.moveEntity(Heading * speed);
+            this.moveEntity(Heading * Constants.BULLET_SPEED, entities);
             float modHeadingX = 1;
             float modHeadingY = 1;
             if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width))

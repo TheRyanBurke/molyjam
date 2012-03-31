@@ -23,6 +23,7 @@ namespace molyjam
         List<Civilian> civilians;
         Player player;
         List<Bullet> bullets;
+        List<EnvironmentalObject> envObjects;
 
         Texture2D targetBorder;
         
@@ -30,6 +31,7 @@ namespace molyjam
         Texture2D player_tex;
         Texture2D bullet_tex;
         Texture2D gameover_tex;
+        Texture2D env_tex;
 
         bool gameover;
        
@@ -51,6 +53,7 @@ namespace molyjam
             // TODO: Add your initialization logic here
             civilians = new List<Civilian>();
             bullets = new List<Bullet>();
+            envObjects = new List<EnvironmentalObject>();
 
             Constants.screenWidth = GraphicsDevice.Viewport.Width;
             Constants.screenHeight = GraphicsDevice.Viewport.Height;
@@ -68,13 +71,16 @@ namespace molyjam
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            player_tex = Content.Load<Texture2D>("player");
+            player_tex = Content.Load<Texture2D>("player-32");
             civ_tex1 = Content.Load<Texture2D>("civ1-32");
             bullet_tex = Content.Load<Texture2D>("bullet");
             gameover_tex = Content.Load<Texture2D>("gameover");
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
+
+            env_tex = new Texture2D(GraphicsDevice, 1, 1);
+            env_tex.SetData(new[] { Color.Tan });
 
             font = Content.Load<SpriteFont>("SpriteFont1");
 
@@ -93,6 +99,9 @@ namespace molyjam
 
             bullets.Clear();
             bullets = new List<Bullet>();
+
+            envObjects.Clear();
+            //envObjects.Add(new EnvironmentalObject(new Vector2(350f, 225f), env_tex, new Rectangle(0, 0, 100, 100)));
 
             gameover = false;
         }
@@ -155,13 +164,18 @@ namespace molyjam
 
             if (!gameover)
             {
+                List<Entity> allEntities = new List<Entity>();
+                allEntities.AddRange(civilians);
+                allEntities.AddRange(bullets);
+                allEntities.Add(player);
+
                 //move player
-                player.moveEntity(leftStick);
+                player.move(leftStick, allEntities);
 
                 //move civilians
                 foreach (Civilian civilian in civilians)
                 {
-                    civilian.Update(player);
+                    civilian.Update(player, allEntities);
                 }
 
                 //acquireTarget should come before bullet updates
@@ -169,10 +183,7 @@ namespace molyjam
 
                 // bullet.update() returns true if the bullet has run out of ricochets
                 List<Bullet> remainingBullets = new List<Bullet>();
-                List<Entity> allEntities = new List<Entity>();
-                allEntities.AddRange(civilians);
-                allEntities.AddRange(bullets);
-                allEntities.Add(player);
+ 
                 foreach (Bullet b in bullets)
                 {
                     if (!b.update(allEntities))
@@ -242,6 +253,11 @@ namespace molyjam
                 }
 
                 spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
+            }
+
+            foreach (EnvironmentalObject e in envObjects)
+            {
+                spriteBatch.Draw(e.Texture, e.getDrawArea(), Color.Tan);
             }
 
             foreach (Bullet b in bullets)
