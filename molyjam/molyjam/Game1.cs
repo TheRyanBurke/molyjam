@@ -25,8 +25,12 @@ namespace molyjam
         List<Bullet> bullets;
 
         Texture2D targetBorder;
+        Texture2D blah;
 
         int timeOfLastShot = 0;
+        int score = 0;
+        int combo = 0;
+        int combo_counter = 0;
 
         Texture2D civ_tex1;
         Texture2D player_tex;
@@ -81,6 +85,9 @@ namespace molyjam
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
+
+            blah = new Texture2D(GraphicsDevice, 1, 1);
+            blah.SetData(new[] { Color.White });
 
             font = Content.Load<SpriteFont>("SpriteFont1");
         }
@@ -158,6 +165,21 @@ namespace molyjam
             {
                 if (!b.update(allEntities))
                     remainingBullets.Add(b);
+                else if (b.Expired)
+                {
+                    combo_counter += 1;
+                    if (combo_counter == 3)
+                    {
+                        combo++;
+                        combo_counter = 0;
+                    }
+                    score += 100 * (1+combo);
+                }
+                else
+                {
+                    combo = 0;
+                    combo_counter = 0;
+                }
             }
             bullets = remainingBullets;            
 
@@ -167,7 +189,7 @@ namespace molyjam
             {
                 Vector2 bulletHeading = player.shoot();
                 if (!(player.Target is Player))
-                    bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, Constants.DEFAULT_BULLET_RICOCHETS));
+                    bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, combo));
             }
 
             base.Update(gameTime);
@@ -214,9 +236,35 @@ namespace molyjam
                 spriteBatch.Draw(b.Texture, b.getDrawArea(), Color.White);
             }
 
+            spriteBatch.DrawString(font, "Score: " + score.ToString(), new Vector2(5, 5), Color.Black);
+            spriteBatch.DrawString(font, "Combo:" + combo.ToString(), new Vector2(200, 5), Color.Black);
+            Rectangle combo1_border = new Rectangle(205, 30, 10, 10);
+            Rectangle combo2_border = new Rectangle(225, 30, 10, 10);
+            Rectangle combo3_border = new Rectangle(245, 30, 10, 10);
+            Rectangle combo1 = new Rectangle(207, 32, 6, 6);
+            Rectangle combo2 = new Rectangle(227, 32, 6, 6);
+            Rectangle combo3 = new Rectangle(247, 32, 6, 6);
+            spriteBatch.Draw(blah, combo1_border, Color.Black);
+            spriteBatch.Draw(blah, combo2_border, Color.Black);
+            spriteBatch.Draw(blah, combo3_border, Color.Black);
+            if(combo_counter > 0)
+                spriteBatch.Draw(blah, combo1, Color.Red);
+            else
+                spriteBatch.Draw(blah, combo1, Color.White);
+            if (combo_counter > 1)
+                spriteBatch.Draw(blah, combo2, Color.Red);
+            else
+                spriteBatch.Draw(blah, combo2, Color.White);
+            if (combo_counter > 2)
+                spriteBatch.Draw(blah, combo3, Color.Red);
+            else
+                spriteBatch.Draw(blah, combo3, Color.White);
+
             spriteBatch.End();
             #endregion drawStuffs
             base.Draw(gameTime);
         }
+
+
     }
 }

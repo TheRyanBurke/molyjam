@@ -12,7 +12,7 @@ namespace molyjam
 
         public static int SHOOT_INTERVAL = 3000; //ms
 
-        public static int DEFAULT_BULLET_RICOCHETS = 0;
+        public static int DEFAULT_BULLET_RICOCHETS = 1;
 
         public static float TARGET_RANGE = 200f;
     }
