@@ -56,18 +56,9 @@ namespace molyjam
         }
 
         public Civilian(Vector2 origin, Texture2D texture)
-            : base(origin, texture)
+            : this(origin, new Vector2(0,1), CivilianStates.Default, texture)
         {
-            lifeTime = new Stopwatch();
-            lifeTime.Reset();
 
-            this.Heading = new Vector2(0, 1);
-            shot = false;
-        }
-
-        public void getShot()
-        {
-            shot = true;
         }
 
         public Civilian(Vector2 origin, Vector2 heading, CivilianStates state, Texture2D texture, float speed = 1.0f) // Constructor Override, allows the state to be set
@@ -78,9 +69,15 @@ namespace molyjam
             this.Heading = heading;
             this.civilianState = state;
             this.speed = speed;
+            shot = false;
 
             Random gen = new Random();
             headingChangeMillis = gen.Next(500,1000);
+        }
+
+        public void getShot()
+        {
+            shot = true;
         }
 
         public void moveCivilian()
