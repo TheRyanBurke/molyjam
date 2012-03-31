@@ -10,7 +10,7 @@ namespace molyjam
     class Player : Civilian
     {
 
-        float keyboardSpeed = 1.0f;
+        float keyboardSpeed = 5.0f;
         public float KeyboardSpeed
         {
             get { return keyboardSpeed; }
@@ -47,9 +47,17 @@ namespace molyjam
             }
         }
 
-        public void shoot()
+        /**
+         * Return Vector2 from player to target
+         */
+        public Vector2 shoot()
         {
             target.getShot();
+            
+            double x = (target.Origin.X - this.Origin.X);// / Math.Sqrt(target.Origin.X * target.Origin.X + this.Origin.X * this.Origin.X);
+            double y = (target.Origin.Y - this.Origin.Y);// / Math.Sqrt(target.Origin.Y * target.Origin.Y + this.Origin.Y * this.Origin.Y);
+            Vector2 vectorToTarget = new Vector2((float)x, (float)y);
+            return vectorToTarget;
         }
 
         private float distanceToCivilian(Civilian c)

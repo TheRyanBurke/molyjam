@@ -87,7 +87,7 @@ namespace molyjam
             float modHeadingY = 1;
             if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width))
                 modHeadingX = -1;
-            if (Origin.Y >= 0 || Origin.Y <= (Constants.screenHeight + Texture.Height))
+            if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height))
                 modHeadingY = -1;
             Vector2 newHeading = new Vector2(modHeadingX * Heading.X, modHeadingY * Heading.Y);
             Heading = newHeading;

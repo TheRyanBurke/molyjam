@@ -22,13 +22,16 @@ namespace molyjam
 
         List<Civilian> civilians;
         Player player;
+        List<Bullet> bullets;
 
         Texture2D targetBorder;
 
         int timeOfLastShot = 0;
         const int SHOOT_INTERVAL = 3;
 
-
+        Texture2D civ_tex1;
+        Texture2D player_tex;
+        Texture2D bullet_tex;
        
 
         public Game1()
@@ -64,15 +67,18 @@ namespace molyjam
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            Texture2D tex = Content.Load<Texture2D>("player");
-            Texture2D civ_tex1 = Content.Load<Texture2D>("civ1");
+            player_tex = Content.Load<Texture2D>("player");
+            civ_tex1 = Content.Load<Texture2D>("civ1");
+            bullet_tex = Content.Load<Texture2D>("bullet");
 
-            player = new Player(new Vector2(50f, 50f), tex);
+            player = new Player(new Vector2(50f, 50f), player_tex);
 
             civilians.Add(new Civilian(new Vector2(100f, 100f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(200f, 100f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(300f, 100f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(400f, 50f), civ_tex1));
+
+            bullets = new List<Bullet>();
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
@@ -105,8 +111,10 @@ namespace molyjam
 
             if (gameTime.TotalGameTime.Seconds % SHOOT_INTERVAL == 0 && gameTime.TotalGameTime.Seconds - timeOfLastShot > 1)
             {
-                player.shoot();
                 timeOfLastShot = gameTime.TotalGameTime.Seconds;
+                Vector2 bulletHeading = player.shoot();
+                if(!(player.Target is Player))
+                    bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading));
             }
 
 
@@ -145,6 +153,14 @@ namespace molyjam
                 civilian.Update(player);
             }
 
+            List<Bullet> remainingBullets = new List<Bullet>();
+            foreach (Bullet b in bullets)
+            {
+                if (!b.update())
+                    remainingBullets.Add(b);
+            }
+            bullets = remainingBullets;
+
             player.acquireTarget(civilians);
 
             base.Update(gameTime);
@@ -182,6 +198,12 @@ namespace molyjam
                     spriteBatch.Draw(targetBorder, border, Color.White);
                 }
                 spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
+            }
+
+            foreach (Bullet b in bullets)
+            {
+                //spriteBatch.Draw(b.Texture, b.getDrawArea(), null, Color.White, (float)(Math.Atan2(b.Origin.Y, b.Origin.X) / (2 * Math.PI)), b.Origin, SpriteEffects.None, 0);
+                spriteBatch.Draw(b.Texture, b.getDrawArea(), Color.White);
             }
 
             spriteBatch.End();
