@@ -9,7 +9,7 @@ namespace molyjam
 {
     class Civilian : Entity
     {
-        enum CivilianStates { Inactive, Default, Alarmed, Dead } // enums to show possible states of civilian entity
+        public enum CivilianStates { Inactive, Default, Alarmed, Dead } // enums to show possible states of civilian entity, move to constants.cs
 
         CivilianStates civilianState;   // Civilian-specific members
         float speed;
@@ -20,7 +20,7 @@ namespace molyjam
 
         }
 
-        public Civilian(Vector2 origin, Vector2 heading, CivilianStates state, float speed=1.0f, Texture2D texture) // Constructor Override, allows the state to be set
+        public Civilian(Vector2 origin, Vector2 heading, CivilianStates state, Texture2D texture, float speed = 1.0f) // Constructor Override, allows the state to be set
             : base(origin, texture)
         {
             this.Heading = heading;
@@ -30,7 +30,7 @@ namespace molyjam
 
         public void Update()
         {
-
+            this.moveEntity(this.Heading * speed);
         }
     }
 }

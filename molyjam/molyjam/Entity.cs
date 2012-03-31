@@ -21,7 +21,7 @@ namespace molyjam
         public Vector2 Heading
         {
             get { return heading; }
-            set { heading = value; }
+            set { Vector2 normVector = value; value.Normalize(); heading = value; } // Normalize all headings
         }
 
         Texture2D texture;
