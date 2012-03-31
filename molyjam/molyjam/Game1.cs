@@ -25,12 +25,13 @@ namespace molyjam
         List<Bullet> bullets;
 
         Texture2D targetBorder;
-
-        int timeOfLastShot = 0;
-
+        
         Texture2D civ_tex1;
         Texture2D player_tex;
         Texture2D bullet_tex;
+        Texture2D gameover_tex;
+
+        bool gameover;
        
 
         public Game1()
@@ -49,6 +50,7 @@ namespace molyjam
         {
             // TODO: Add your initialization logic here
             civilians = new List<Civilian>();
+            bullets = new List<Bullet>();
 
             Constants.screenWidth = GraphicsDevice.Viewport.Width;
             Constants.screenHeight = GraphicsDevice.Viewport.Height;
@@ -69,20 +71,30 @@ namespace molyjam
             player_tex = Content.Load<Texture2D>("player");
             civ_tex1 = Content.Load<Texture2D>("civ1-32");
             bullet_tex = Content.Load<Texture2D>("bullet");
-
-            player = new Player(new Vector2(50f, 50f), player_tex);
-
-            civilians.Add(new Civilian(new Vector2(100f, 100f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(200f, 100f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(300f, 100f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(400f, 50f), civ_tex1));
-
-            bullets = new List<Bullet>();
+            gameover_tex = Content.Load<Texture2D>("gameover");
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
 
             font = Content.Load<SpriteFont>("SpriteFont1");
+
+            initGameObjects();
+        }
+
+        protected void initGameObjects()
+        {
+            player = new Player(new Vector2(50f, 50f), player_tex);
+
+            civilians.Clear();
+            civilians.Add(new Civilian(new Vector2(100f, 300f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(200f, 300f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(300f, 300f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(400f, 350f), civ_tex1));
+
+            bullets.Clear();
+            bullets = new List<Bullet>();
+
+            gameover = false;
         }
 
         /// <summary>
@@ -102,14 +114,19 @@ namespace molyjam
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().GetPressedKeys().Contains(Keys.Escape))
-                this.Exit();
-
             // TODO: Add your update logic here
             GamePadState gps = GamePad.GetState(PlayerIndex.One);
             KeyboardState kbs = Keyboard.GetState();
             Vector2 leftStick = gps.ThumbSticks.Left;
+
+            // Allows the game to exit
+            if (gps.Buttons.Back == ButtonState.Pressed || kbs.GetPressedKeys().Contains(Keys.Escape))
+                this.Exit();
+
+            if (kbs.GetPressedKeys().Contains(Keys.D1))
+                initGameObjects();
+
+
 
             #region KeyboardMovementBlock
             // Keyboard movement block. Added temporarily for debugging.
@@ -135,39 +152,50 @@ namespace molyjam
             }
             // Keyboard movement block end 
             #endregion
-            
-            //move player
-            player.moveEntity(leftStick);
 
-            //move civilians
-            foreach (Civilian civilian in civilians)
+            if (!gameover)
             {
-                civilian.Update(player);
-            }
+                //move player
+                player.moveEntity(leftStick);
 
-            //acquireTarget should come before bullet updates
-            player.acquireTarget(civilians);
+                //move civilians
+                foreach (Civilian civilian in civilians)
+                {
+                    civilian.Update(player);
+                }
 
-            // bullet.update() returns true if the bullet has run out of ricochets
-            List<Bullet> remainingBullets = new List<Bullet>();
-            List<Entity> allEntities = new List<Entity>();
-            allEntities.AddRange(civilians);
-            allEntities.AddRange(bullets);
-            allEntities.Add(player);
-            foreach (Bullet b in bullets)
-            {
-                if (!b.update(allEntities))
-                    remainingBullets.Add(b);
-            }
-            bullets = remainingBullets;            
+                //acquireTarget should come before bullet updates
+                player.acquireTarget(civilians);
 
-            //bullet fire should be last event in engine loop
-            
-            if (gameTime.TotalGameTime.Milliseconds % Constants.SHOOT_INTERVAL == 0)
-            {
-                Vector2 bulletHeading = player.shoot();
-                if (!(player.Target is Player))
-                    bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, Constants.DEFAULT_BULLET_RICOCHETS));
+                // bullet.update() returns true if the bullet has run out of ricochets
+                List<Bullet> remainingBullets = new List<Bullet>();
+                List<Entity> allEntities = new List<Entity>();
+                allEntities.AddRange(civilians);
+                allEntities.AddRange(bullets);
+                allEntities.Add(player);
+                foreach (Bullet b in bullets)
+                {
+                    if (!b.update(allEntities))
+                        remainingBullets.Add(b);
+                }
+                bullets = remainingBullets;
+
+                //bullet fire should be last event in engine loop
+
+                if (gameTime.TotalGameTime.Milliseconds % Constants.SHOOT_INTERVAL == 0)
+                {
+                    Vector2 bulletHeading = player.shoot();
+                    if (!(player.Target is Player))
+                        bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, Constants.DEFAULT_BULLET_RICOCHETS));
+                }
+
+                foreach (Civilian c in civilians)
+                {
+                    if (c.CivilianState == Civilian.CivilianStates.Dead)
+                        gameover = true;
+                }
+
+
             }
 
             base.Update(gameTime);
@@ -214,6 +242,12 @@ namespace molyjam
                 spriteBatch.Draw(b.Texture, b.getDrawArea(), Color.White);
             }
 
+            if (gameover)
+            {
+                Rectangle area = gameover_tex.Bounds;
+                area.Offset(Constants.screenWidth / 2, Constants.screenHeight / 2);
+                spriteBatch.Draw(gameover_tex, area, Color.White);
+            }
             spriteBatch.End();
             #endregion drawStuffs
             base.Draw(gameTime);
