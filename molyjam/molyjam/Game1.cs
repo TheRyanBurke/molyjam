@@ -19,6 +19,9 @@ namespace molyjam
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        List<Civilian> civilians;
+        Player player;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -34,6 +37,9 @@ namespace molyjam
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            civilians = new List<Civilian>();
+
+
 
             base.Initialize();
         }
@@ -48,6 +54,12 @@ namespace molyjam
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            Texture2D tex = Content.Load<Texture2D>("player");
+            Texture2D civ_tex1 = Content.Load<Texture2D>("civ1");
+
+            player = new Player(new Vector2(50f, 50f), tex);
+
+            civilians.Add(new Civilian(new Vector2(100f, 100f), civ_tex1));
         }
 
         /// <summary>
@@ -67,10 +79,14 @@ namespace molyjam
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().GetPressedKeys().Contains(Keys.Escape))
                 this.Exit();
 
             // TODO: Add your update logic here
+            GamePadState gps = GamePad.GetState(PlayerIndex.One);
+            KeyboardState kbs = Keyboard.GetState();
+            Vector2 leftStick = gps.ThumbSticks.Left;
+            player.moveEntity(leftStick);
 
             base.Update(gameTime);
         }
@@ -84,7 +100,18 @@ namespace molyjam
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            Rectangle playerPos = player.Texture.Bounds;
+            playerPos.Offset(Convert.ToInt32(player.Origin.X), Convert.ToInt32(player.Origin.Y));
+            spriteBatch.Draw(player.Texture, playerPos, Color.White);
 
+            foreach(Civilian c in civilians) {
+                Rectangle civPos = c.Texture.Bounds;
+                civPos.Offset(Convert.ToInt32(c.Origin.X), Convert.ToInt32(c.Origin.Y));
+                spriteBatch.Draw(c.Texture, civPos, Color.White);
+            }
+
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
