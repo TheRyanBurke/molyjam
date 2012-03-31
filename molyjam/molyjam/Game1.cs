@@ -187,6 +187,8 @@ namespace molyjam
                     Vector2 bulletHeading = player.shoot();
                     if (!(player.Target is Player))
                         bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, Constants.DEFAULT_BULLET_RICOCHETS));
+                    else
+                        player.getShot();
                 }
 
                 int numDeadCivilians = 0;
@@ -196,7 +198,7 @@ namespace molyjam
                         numDeadCivilians++;
                 }
 
-                if (numDeadCivilians >= Constants.MAX_DEAD_CIVILIANS)
+                if (numDeadCivilians >= Constants.MAX_DEAD_CIVILIANS || player.Health <= 0)
                 {
                     gameover = true;
                 }
@@ -247,6 +249,9 @@ namespace molyjam
                 //spriteBatch.Draw(b.Texture, b.getDrawArea(), null, Color.White, (float)(Math.Atan2(b.Origin.Y, b.Origin.X) / (2 * Math.PI)), b.Origin, SpriteEffects.None, 0);
                 spriteBatch.Draw(b.Texture, b.getDrawArea(), Color.White);
             }
+
+            String health = "Health: " + player.Health;
+            spriteBatch.DrawString(font, health, new Vector2(10, 10), Color.White);
 
             if (gameover)
             {

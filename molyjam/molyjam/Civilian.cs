@@ -37,10 +37,10 @@ namespace molyjam
                     switch (value)
                     {
                         case CivilianStates.Alarmed:
-                            speed = 2.0f;
+                            speed = 5.0f;
                             break;
                         default:
-                            speed = 1.0f;
+                            speed = 3.0f;
                             break;
                     }
                     #endregion
