@@ -162,9 +162,9 @@ namespace molyjam
             bullets = remainingBullets;            
 
             //bullet fire should be last event in engine loop
-            if (gameTime.TotalGameTime.Seconds % Constants.SHOOT_INTERVAL == 0 && gameTime.TotalGameTime.Seconds - timeOfLastShot > 1)
+            
+            if (gameTime.TotalGameTime.Milliseconds % Constants.SHOOT_INTERVAL == 0)
             {
-                timeOfLastShot = gameTime.TotalGameTime.Seconds;
                 Vector2 bulletHeading = player.shoot();
                 if (!(player.Target is Player))
                     bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, Constants.DEFAULT_BULLET_RICOCHETS));

@@ -10,7 +10,7 @@ namespace molyjam
         public static int screenWidth;
         public static int screenHeight;
 
-        public static int SHOOT_INTERVAL = 3;
+        public static int SHOOT_INTERVAL = 3000; //ms
 
         public static int DEFAULT_BULLET_RICOCHETS = 0;
 
