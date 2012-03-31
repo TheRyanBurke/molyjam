@@ -25,6 +25,36 @@ namespace molyjam
             set { shot = value; }
         }
 
+        public CivilianStates CivilianState
+        {
+            get { return civilianState; }
+            set
+            {
+                if (civilianState != value)
+                {
+                    #region Civilian_Change_Behavoir
+                    if (civilianState == CivilianStates.Inactive && value != CivilianStates.Default) { return; } // Inactive civilians should go to Default state
+                    switch (value)
+                    {
+                        case CivilianStates.Alarmed:
+                            speed = 2.0f;
+                            break;
+                        default:
+                            speed = 1.0f;
+                            break;
+                    }
+                    #endregion
+                    civilianState = value; 
+                }
+            }
+        }
+
+        public float Speed
+        {
+            get { return speed; }
+            set { speed = value; }
+        }
+
         public Civilian(Vector2 origin, Texture2D texture)
             : base(origin, texture)
         {
@@ -53,20 +83,49 @@ namespace molyjam
             headingChangeMillis = gen.Next(500,1000);
         }
 
-        public void Update()
+        public void Update(Player player)
         {
-            this.moveEntity(this.Heading * speed);
-            if ((lifeTime.ElapsedMilliseconds >= headingChangeMillis) && this.civilianState == CivilianStates.Default)
+
+            #region Civilian_State_Check
+            // Set state to alarmed if player is close
+            if (Math.Abs((Origin - player.Origin).Length()) < 200)
+            {
+                CivilianState = Civilian.CivilianStates.Alarmed;
+            }
+            #endregion
+
+            if (lifeTime.ElapsedMilliseconds >= headingChangeMillis)
             {
                 Random gen = new Random();
-                double rnd = gen.Next(0,46)-22.5;
-                rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
-                Vector2 rot = this.Heading;
+                double rnd;
+                Vector2 rot;
+                #region Civilian_Behavior_Rules
+                switch (this.civilianState)
+                {
+                    case CivilianStates.Default:
+                        rnd = gen.Next(0,46)-22.5;
+                        rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
+                        rot = this.Heading;
+                        break;
+                    case CivilianStates.Alarmed:
+                        rnd = gen.Next(0, 91) - 45;
+                        rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
+                        rot = this.Origin - player.Origin;
+                        break;
+                    default:
+                        rnd = 0.0;
+                        rot = this.Heading;
+                        break;
+                }
+                #endregion
+
                 rot.X = (rot.X * (float)Math.Cos(rnd)) + (rot.Y * (float)Math.Sin(rnd));
                 rot.Y = (rot.Y * (float)Math.Cos(rnd)) - (rot.X * (float)Math.Sin(rnd));
                 this.Heading = rot;
-                headingChangeMillis = lifeTime.ElapsedMilliseconds + gen.Next(500, 1000);          
+                headingChangeMillis = lifeTime.ElapsedMilliseconds + gen.Next(500, 1000);
             }
+
+            this.moveEntity(this.Heading * speed);
         }
     }
 }
