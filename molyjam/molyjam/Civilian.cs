@@ -37,10 +37,10 @@ namespace molyjam
                     switch (value)
                     {
                         case CivilianStates.Alarmed:
-                            speed = 2.0f;
+                            speed = 5.0f;
                             break;
                         default:
-                            speed = 1.0f;
+                            speed = 3.0f;
                             break;
                     }
                     #endregion
@@ -97,47 +97,49 @@ namespace molyjam
 
         public void Update(Player player)
         {
-
-            #region Civilian_State_Check
-            // Set state to alarmed if player is close
-            if (Math.Abs((Origin - player.Origin).Length()) < 200)
+            if (civilianState != CivilianStates.Dead)
             {
-                CivilianState = Civilian.CivilianStates.Alarmed;
-            }
-            #endregion
-
-            if (lifeTime.ElapsedMilliseconds >= headingChangeMillis)
-            {
-                Random gen = new Random();
-                double rnd;
-                Vector2 rot;
-                #region Civilian_Behavior_Rules
-                switch (this.civilianState)
+                #region Civilian_State_Check
+                // Set state to alarmed if player is close
+                if (Math.Abs((Origin - player.Origin).Length()) < 200)
                 {
-                    case CivilianStates.Default:
-                        rnd = gen.Next(0,46)-22.5;
-                        rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
-                        rot = this.Heading;
-                        break;
-                    case CivilianStates.Alarmed:
-                        rnd = gen.Next(0, 91) - 45;
-                        rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
-                        rot = this.Origin - player.Origin;
-                        break;
-                    default:
-                        rnd = 0.0;
-                        rot = this.Heading;
-                        break;
+                    CivilianState = Civilian.CivilianStates.Alarmed;
                 }
                 #endregion
 
-                rot.X = (rot.X * (float)Math.Cos(rnd)) + (rot.Y * (float)Math.Sin(rnd));
-                rot.Y = (rot.Y * (float)Math.Cos(rnd)) - (rot.X * (float)Math.Sin(rnd));
-                this.Heading = rot;
-                headingChangeMillis = lifeTime.ElapsedMilliseconds + gen.Next(500, 1000);
-            }
+                if (lifeTime.ElapsedMilliseconds >= headingChangeMillis)
+                {
+                    Random gen = new Random();
+                    double rnd;
+                    Vector2 rot;
+                    #region Civilian_Behavior_Rules
+                    switch (this.civilianState)
+                    {
+                        case CivilianStates.Default:
+                            rnd = gen.Next(0, 46) - 22.5;
+                            rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
+                            rot = this.Heading;
+                            break;
+                        case CivilianStates.Alarmed:
+                            rnd = gen.Next(0, 91) - 45;
+                            rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
+                            rot = this.Origin - player.Origin;
+                            break;
+                        default:
+                            rnd = 0.0;
+                            rot = this.Heading;
+                            break;
+                    }
+                    #endregion
 
-            moveCivilian();
+                    rot.X = (rot.X * (float)Math.Cos(rnd)) + (rot.Y * (float)Math.Sin(rnd));
+                    rot.Y = (rot.Y * (float)Math.Cos(rnd)) - (rot.X * (float)Math.Sin(rnd));
+                    this.Heading = rot;
+                    headingChangeMillis = lifeTime.ElapsedMilliseconds + gen.Next(500, 1000);
+                }
+
+                moveCivilian();
+            }
         }
     }
 }

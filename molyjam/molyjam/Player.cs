@@ -10,6 +10,13 @@ namespace molyjam
     class Player : Civilian
     {
 
+        int health;
+        public int Health
+        {
+            get { return health; }
+            set { health = value; }
+        }
+
         float keyboardSpeed = 5.0f;
         public float KeyboardSpeed
         {
@@ -28,6 +35,7 @@ namespace molyjam
             : base(origin, texture)
         {
             target = this;
+            health = 3;
         }
 
         public void acquireTarget(List<Civilian> civs)
@@ -64,6 +72,12 @@ namespace molyjam
         private float distanceToCivilian(Civilian c)
         {
             return (this.Origin - c.Origin).Length();
+        }
+
+        public new void getShot()
+        {
+            Shot = true;
+            this.health--;
         }
 
     }
