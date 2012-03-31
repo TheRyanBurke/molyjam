@@ -26,7 +26,12 @@ namespace molyjam
         List<EnvironmentalObject> envObjects;
 
         Texture2D targetBorder;
-        
+        Texture2D blah;
+
+        int score = 0;
+        int combo = 0;
+        int combo_counter = 0;
+
         Texture2D civ_tex1;
         Texture2D player_tex;
         Texture2D bullet_tex;
@@ -34,7 +39,8 @@ namespace molyjam
         Texture2D env_tex;
 
         bool gameover;
-       
+
+        int shootTimer;
 
         public Game1()
         {
@@ -89,6 +95,7 @@ namespace molyjam
 
         protected void initGameObjects()
         {
+            shootTimer = 0;
             player = new Player(new Vector2(50f, 50f), player_tex);
 
             civilians.Clear();
@@ -102,6 +109,14 @@ namespace molyjam
 
             envObjects.Clear();
             //envObjects.Add(new EnvironmentalObject(new Vector2(350f, 225f), env_tex, new Rectangle(0, 0, 100, 100)));
+
+            targetBorder = new Texture2D(GraphicsDevice, 1, 1);
+            targetBorder.SetData(new[] { Color.White });
+
+            blah = new Texture2D(GraphicsDevice, 1, 1);
+            blah.SetData(new[] { Color.White });
+
+            font = Content.Load<SpriteFont>("SpriteFont1");
 
             gameover = false;
         }
@@ -134,7 +149,6 @@ namespace molyjam
 
             if (kbs.GetPressedKeys().Contains(Keys.D1))
                 initGameObjects();
-
 
 
             #region KeyboardMovementBlock
@@ -188,13 +202,32 @@ namespace molyjam
                 {
                     if (!b.update(allEntities))
                         remainingBullets.Add(b);
+                    else if (b.Expired)
+                    {
+                        combo_counter += 1;
+                        if (combo_counter == 3)
+                        {
+                            combo++;
+                            combo_counter = 0;
+                        }
+                        score += 100 * (1 + combo);
+                    }
+                    else
+                    {
+                        combo = 0;
+                        combo_counter = 0;
+                    }
                 }
                 bullets = remainingBullets;
 
                 //bullet fire should be last event in engine loop
-
-                if (gameTime.TotalGameTime.Milliseconds % Constants.SHOOT_INTERVAL == 0)
+                
+                shootTimer += gameTime.ElapsedGameTime.Milliseconds;
+                //Console.WriteLine("ms: " + gameTime.TotalGameTime.Milliseconds + " -- shoottimer: " + shootTimer);
+                if (shootTimer > Constants.SHOOT_INTERVAL)
                 {
+                    shootTimer = 0;
+
                     Vector2 bulletHeading = player.shoot();
                     if (!(player.Target is Player))
                         bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, Constants.DEFAULT_BULLET_RICOCHETS));
@@ -213,7 +246,6 @@ namespace molyjam
                 {
                     gameover = true;
                 }
-
 
             }
 
@@ -266,8 +298,34 @@ namespace molyjam
                 spriteBatch.Draw(b.Texture, b.getDrawArea(), Color.White);
             }
 
+
+            spriteBatch.DrawString(font, "Score: " + score.ToString(), new Vector2(5, 5), Color.Black);
+            spriteBatch.DrawString(font, "Combo:" + combo.ToString(), new Vector2(200, 5), Color.Black);
+            Rectangle combo1_border = new Rectangle(205, 30, 10, 10);
+            Rectangle combo2_border = new Rectangle(225, 30, 10, 10);
+            Rectangle combo3_border = new Rectangle(245, 30, 10, 10);
+            Rectangle combo1 = new Rectangle(207, 32, 6, 6);
+            Rectangle combo2 = new Rectangle(227, 32, 6, 6);
+            Rectangle combo3 = new Rectangle(247, 32, 6, 6);
+            spriteBatch.Draw(blah, combo1_border, Color.Black);
+            spriteBatch.Draw(blah, combo2_border, Color.Black);
+            spriteBatch.Draw(blah, combo3_border, Color.Black);
+            if(combo_counter > 0)
+                spriteBatch.Draw(blah, combo1, Color.Red);
+            else
+                spriteBatch.Draw(blah, combo1, Color.White);
+            if (combo_counter > 1)
+                spriteBatch.Draw(blah, combo2, Color.Red);
+            else
+                spriteBatch.Draw(blah, combo2, Color.White);
+            if (combo_counter > 2)
+                spriteBatch.Draw(blah, combo3, Color.Red);
+            else
+                spriteBatch.Draw(blah, combo3, Color.White);
+
+
             String health = "Health: " + player.Health;
-            spriteBatch.DrawString(font, health, new Vector2(10, 10), Color.White);
+            spriteBatch.DrawString(font, health, new Vector2(5, 25), Color.White);
 
             if (gameover)
             {
@@ -275,9 +333,12 @@ namespace molyjam
                 area.Offset(Constants.screenWidth / 2, Constants.screenHeight / 2);
                 spriteBatch.Draw(gameover_tex, area, Color.White);
             }
+
             spriteBatch.End();
             #endregion drawStuffs
             base.Draw(gameTime);
         }
+
+
     }
 }

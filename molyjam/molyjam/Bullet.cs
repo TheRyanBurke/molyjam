@@ -10,6 +10,13 @@ namespace molyjam
 {
     class Bullet : Entity
     {
+        bool expired = false;
+        public bool Expired
+        {
+            get { return expired; }
+            set { expired = value; }
+        }
+
         Stopwatch lifetime;
         int ricochetsRemaining;
 
@@ -29,8 +36,8 @@ namespace molyjam
 
         public bool moveBullet(List<Entity> entities)
         {
-            bool expired = false;
             this.moveEntity(Heading * Constants.BULLET_SPEED, entities);
+
             float modHeadingX = 1;
             float modHeadingY = 1;
             if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width))
