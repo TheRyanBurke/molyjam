@@ -25,6 +25,18 @@ namespace molyjam
             set { shot = value; }
         }
 
+        public CivilianStates CivilianState
+        {
+            get { return civilianState; }
+            set { civilianState = value; }
+        }
+
+        public float Speed
+        {
+            get { return speed; }
+            set { speed = value; }
+        }
+
         public Civilian(Vector2 origin, Texture2D texture)
             : base(origin, texture)
         {
@@ -56,16 +68,30 @@ namespace molyjam
         public void Update()
         {
             this.moveEntity(this.Heading * speed);
-            if ((lifeTime.ElapsedMilliseconds >= headingChangeMillis) && this.civilianState == CivilianStates.Default)
+            if (lifeTime.ElapsedMilliseconds >= headingChangeMillis)
             {
                 Random gen = new Random();
-                double rnd = gen.Next(0,46)-22.5;
-                rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
+                double rnd;
+                switch (this.civilianState)
+                {
+                    case CivilianStates.Default:
+                        rnd = gen.Next(0,46)-22.5;
+                        rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
+                        break;
+                    case CivilianStates.Alarmed:
+                        rnd = gen.Next(0, 91) - 45;
+                        rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
+                        break;
+                    default:
+                        rnd = 0.0;
+                        break;
+                }
+
                 Vector2 rot = this.Heading;
                 rot.X = (rot.X * (float)Math.Cos(rnd)) + (rot.Y * (float)Math.Sin(rnd));
                 rot.Y = (rot.Y * (float)Math.Cos(rnd)) - (rot.X * (float)Math.Sin(rnd));
                 this.Heading = rot;
-                headingChangeMillis = lifeTime.ElapsedMilliseconds + gen.Next(500, 1000);          
+                headingChangeMillis = lifeTime.ElapsedMilliseconds + gen.Next(500, 1000);
             }
         }
     }

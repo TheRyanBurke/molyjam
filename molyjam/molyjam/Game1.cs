@@ -71,7 +71,7 @@ namespace molyjam
             civilians.Add(new Civilian(new Vector2(100f, 100f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(200f, 100f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(300f, 100f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(500f, 50f), new Vector2(0,-1), Civilian.CivilianStates.Default,civ_tex1));
+            civilians.Add(new Civilian(new Vector2(400f, 50f), new Vector2(0,-1), Civilian.CivilianStates.Default,civ_tex1));
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
@@ -141,6 +141,14 @@ namespace molyjam
             player.moveEntity(leftStick);
             foreach (Civilian civilian in civilians)
             {
+                // Set state to alarmed if player is close
+                if (Math.Abs((civilian.Origin - player.Origin).Length()) < 200 && civilian.CivilianState != Civilian.CivilianStates.Alarmed)
+                {
+                    // Refactor into a state change method in Civilian.cs
+                    civilian.CivilianState = Civilian.CivilianStates.Alarmed;
+                    civilian.Speed = civilian.Speed * 2.0f;
+
+                }
                 civilian.Update();
             }
 
