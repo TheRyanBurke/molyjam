@@ -10,10 +10,18 @@ namespace molyjam
     class Entity
     {
         Vector2 origin;
+        Vector2 heading;
+
         public Vector2 Origin
         {
             get { return origin; }
             set { origin = value; }
+        }
+
+        public Vector2 Heading
+        {
+            get { return heading; }
+            set { heading = value; }
         }
 
         Texture2D texture;
