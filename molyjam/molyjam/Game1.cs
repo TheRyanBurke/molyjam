@@ -22,7 +22,9 @@ namespace molyjam
         List<Civilian> civilians;
         Player player;
 
-        float keyboardSpeed = 1.0f; // Constant for Keyboard speed. Should be dropped into a static class at some point, or abandoned altogether.
+        Texture2D targetBorder;
+
+       
 
         public Game1()
         {
@@ -62,6 +64,11 @@ namespace molyjam
             player = new Player(new Vector2(50f, 50f), tex);
 
             civilians.Add(new Civilian(new Vector2(100f, 100f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(200f, 100f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(300f, 100f), civ_tex1));
+
+            targetBorder = new Texture2D(GraphicsDevice, 1, 1);
+            targetBorder.SetData(new[] { Color.White });
         }
 
         /// <summary>
@@ -71,6 +78,7 @@ namespace molyjam
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            targetBorder.Dispose();
         }
 
         /// <summary>
@@ -98,16 +106,16 @@ namespace molyjam
                 switch (keyList[i])
                 {
                     case Keys.Down:
-                        leftStick += new Vector2(0f, -1 * keyboardSpeed);
+                        leftStick += new Vector2(0f, -1 * player.KeyboardSpeed);
                         break;
                     case Keys.Up:
-                        leftStick += new Vector2(0f, keyboardSpeed);
+                        leftStick += new Vector2(0f, player.KeyboardSpeed);
                         break;
                     case Keys.Left:
-                        leftStick += new Vector2(-1 * keyboardSpeed, 0f);
+                        leftStick += new Vector2(-1 * player.KeyboardSpeed, 0f);
                         break;
                     case Keys.Right:
-                        leftStick += new Vector2(keyboardSpeed, 0f);
+                        leftStick += new Vector2(player.KeyboardSpeed, 0f);
                         break;
                 }
             }
@@ -115,6 +123,8 @@ namespace molyjam
             #endregion
             
             player.moveEntity(leftStick);
+
+            player.acquireTarget(civilians);
 
             base.Update(gameTime);
         }
@@ -128,18 +138,29 @@ namespace molyjam
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            Rectangle playerPos = player.Texture.Bounds;
-            playerPos.Offset(Convert.ToInt32(player.Origin.X), Convert.ToInt32(player.Origin.Y));
-            spriteBatch.Draw(player.Texture, playerPos, Color.White);
+            
+            List<Civilian> allPeople = new List<Civilian>();
+            allPeople.Add(player);
+            allPeople.AddRange(civilians);
 
-            foreach(Civilian c in civilians) {
-                Rectangle civPos = c.Texture.Bounds;
-                civPos.Offset(Convert.ToInt32(c.Origin.X), Convert.ToInt32(c.Origin.Y));
-                spriteBatch.Draw(c.Texture, civPos, Color.White);
+            #region drawStuffs
+            spriteBatch.Begin();
+
+            foreach(Civilian c in allPeople) {
+                if (player.Target.Equals(c))
+                {
+                    Rectangle border = c.getDrawArea();
+                    border.X -= 5;
+                    border.Y -= 5;
+                    border.Width += 10;
+                    border.Height += 10;
+                    spriteBatch.Draw(targetBorder, border, Color.White);
+                }
+                spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
             }
 
             spriteBatch.End();
+            #endregion drawStuffs
             base.Draw(gameTime);
         }
     }
