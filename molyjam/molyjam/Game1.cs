@@ -357,8 +357,14 @@ namespace molyjam
                     rotationAngle = Math.Acos(c.Heading.Y);
                 else
                     rotationAngle = (Math.PI * 2) - Math.Acos(c.Heading.Y);
-                //spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
-                spriteBatch.Draw(c.Texture, c.getDrawArea(), null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * c.Texture.Width, c.Heading.Y + 0.5f * c.Texture.Height), SpriteEffects.None, 0);
+                //spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White); //No rotation
+
+                Rectangle destRect = c.getDrawArea();
+                destRect.X += c.Texture.Width/2;
+                destRect.Y += c.Texture.Height/2;
+                spriteBatch.Draw(c.Texture, destRect, null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * c.Texture.Width, c.Heading.Y + 0.5f * c.Texture.Height), SpriteEffects.None, 0);
+                // for debugging - shows origin
+                //spriteBatch.Draw(bullet_tex, new Rectangle((int)c.Origin.X, (int)c.Origin.Y, bullet_tex.Width, bullet_tex.Height), Color.White);
             }
 
             foreach (EnvironmentalObject e in envObjects)
