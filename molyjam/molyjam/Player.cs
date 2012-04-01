@@ -47,8 +47,17 @@ namespace molyjam
 
         public void move(Vector2 vector, List<Entity> entities)
         {
-
+            Vector2 oldposition = Origin;
             this.moveEntity(vector, entities);
+            foreach (Entity e in entities)
+            {
+                if (!this.Equals(e) && this.detectCollision(e))
+                {
+                    Origin = oldposition;
+                    break;
+                }
+
+            }
         }
 
         public void acquireTarget(List<Civilian> civs)
