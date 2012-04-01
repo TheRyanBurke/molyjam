@@ -84,21 +84,24 @@ namespace molyjam
         public void moveCivilian(List<Entity> entities)
         {
             
-            float modHeadingX = 1;
-            float modHeadingY = 1;
-            bool entityCollision = false;
-            foreach (Entity e in entities)
-            {
-                if (!this.Equals(e) && this.detectCollision(e))
-                    entityCollision = true;
-                break;
-            }
-            if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width) || entityCollision)
-                modHeadingX = -1;
-            if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height) || entityCollision)
-                modHeadingY = -1;
-            Vector2 newHeading = new Vector2(modHeadingX * Heading.X, modHeadingY * Heading.Y);
-            Heading = newHeading;
+            //float modHeadingX = 1;
+            //float modHeadingY = 1;
+            //bool entityCollision = false;
+            //foreach (Entity e in entities)
+            //{
+            //    if (!Equals(e) && detectCollision(e))
+            //    {
+            //        entityCollision = true;
+            //    }
+            //    //break;
+            //}
+            
+            //if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width) || entityCollision)
+            //    modHeadingX = -1;
+            //if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height) || entityCollision)
+            //    modHeadingY = -1;
+            //Vector2 newHeading = new Vector2(modHeadingX * Heading.X, modHeadingY * Heading.Y);
+            //Heading = newHeading;
             this.moveEntity(Heading * speed, entities);
 
         }

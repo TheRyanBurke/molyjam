@@ -113,6 +113,8 @@ namespace molyjam
 
             civilians.Clear();
             civilians.Add(new Civilian(new Vector2(100f, 300f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(340f, 210f), civ_tex1));
+//            civilians.Add(new Civilian(new Vector2(320f, 190f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(200f, 300f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(300f, 300f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(400f, 350f), civ_tex1));
@@ -121,7 +123,7 @@ namespace molyjam
             bullets = new List<Bullet>();
 
             envObjects.Clear();
-            //envObjects.Add(new EnvironmentalObject(new Vector2(350f, 225f), env_tex, new Rectangle(0, 0, 100, 100)));
+            envObjects.Add(new EnvironmentalObject(new Vector2(350f, 225f), env_tex, new Rectangle(0, 0, 100, 100)));
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
@@ -202,6 +204,7 @@ namespace molyjam
                 List<Entity> allEntities = new List<Entity>();
                 allEntities.AddRange(civilians);
                 allEntities.AddRange(bullets);
+                allEntities.AddRange(envObjects);
                 allEntities.Add(player);
 
                 //move player

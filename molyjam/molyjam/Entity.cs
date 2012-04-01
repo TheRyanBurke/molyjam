@@ -43,10 +43,26 @@ namespace molyjam
             origin.X = MathHelper.Clamp(origin.X + vector.X, 0, Constants.screenWidth);
             origin.Y = MathHelper.Clamp(origin.Y - vector.Y, 0, Constants.screenHeight);
 
+            // Hit detection with other entities (Not players or bullets)
             foreach(Entity e in entities)
             {
-                if (isCivilianNotPlayer() && !this.Equals(e) && this.detectCollision(e))
-                    origin = oldPosition;
+                if (isNotPlayerOrBullet() && !this.Equals(e) && this.detectCollision(e))
+                {
+                    Heading = Vector2.Negate(Heading);
+                    origin = oldPosition + Heading*vector.Length();
+                    System.Diagnostics.Debug.WriteLine("Hit");
+                }
+            }
+            // Hit detection for walls
+            if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width))
+            {
+                Vector2 wallBounce = new Vector2(-1, 0);
+                heading *= wallBounce;
+            }
+            if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height))
+            {
+                Vector2 wallBounce = new Vector2(0,-1);
+                heading *= wallBounce;
             }
 
         }
@@ -63,17 +79,31 @@ namespace molyjam
             return area;
         }
 
+        public Rectangle getBoundingBox()
+        {
+            return new Rectangle((int)Origin.X, (int)Origin.Y, Texture.Width, Texture.Height);
+        }
+
         public bool detectCollision(Entity e)
         {
-            bool collision = false;
-            Rectangle thisArea = getDrawArea();
-            e.getDrawArea().Intersects(ref thisArea, out collision);
-            return collision;
+            //bool collision = false;
+            //Rectangle thisArea = getDrawArea();
+            //e.getDrawArea().Intersects(ref thisArea, out collision);
+            //e.getBoundingBox().Intersects(ref thisArea, out collision);
+            //return collision;
+            Rectangle thisArea = getBoundingBox();
+            return e.getBoundingBox().Intersects(thisArea);
+
         }
 
         public bool isCivilianNotPlayer()
         {
             return (this is Civilian && !(this is Player));
+        }
+
+        public bool isNotPlayerOrBullet()
+        {
+            return (!(this is Player) && !(this is Bullet));
         }
     }
 }
