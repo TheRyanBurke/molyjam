@@ -1,0 +1,31 @@
+SHOOT NO HUMANS
+from the Geographically-Agnostic Game Design Club
+
+Submission for Molyjam 2012 - a 48-hour global game jam inspired by the ideas of Twitter personality @petermolydeux
+
+To play:
+1) Install the Microsoft XNA Framework Redistributable 4.0 from http://www.microsoft.com/download/en/details.aspx?id=20914
+2) Run molyjam.exe
+
+Created in C# with Microsoft Visual Studio 2010 Express and Microsoft Windows Phone Developer Tools.
+
+Developers
+- Ryan Burke
+- Lou Manglass
+- Jason Markowitz
+
+2D Art Assets
+- Ryan Burke
+- Adam Luzuriaga
+
+Sound Effects
+"Colt 45" - mediacollege.com
+"Bullet ricochet" - mediacollege.com
+"Wilhelm scream" - public domain
+
+Music
+"Intro" - Ryan Burke
+"Cautious Path" - www.SoundJay.com
+
+Special Thanks
+Thanks to Lisa, Sharla, Nora, and Mandi for putting up with us while we brought this idea to life!
