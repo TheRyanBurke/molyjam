@@ -37,6 +37,7 @@ namespace molyjam
         Texture2D targetBorder;
         Texture2D blah;
         Texture2D civ_tex1;
+        Texture2D civ_tex1_aimed;
         Texture2D player_tex;
         Texture2D bullet_tex;
         Texture2D gameover_tex;
@@ -91,6 +92,7 @@ namespace molyjam
             // TODO: use this.Content to load your game content here
             player_tex = Content.Load<Texture2D>("player");
             civ_tex1 = Content.Load<Texture2D>("civ1-32");
+            civ_tex1_aimed = Content.Load<Texture2D>("civ1-32-aimed");
             bullet_tex = Content.Load<Texture2D>("bullet");
             gameover_tex = Content.Load<Texture2D>("gameover");
             gameover_suicide_tex = Content.Load<Texture2D>("gameover-suicide");
@@ -166,6 +168,7 @@ namespace molyjam
             targetBorder.Dispose();
             blah.Dispose();
             civ_tex1.Dispose();
+            civ_tex1_aimed.Dispose();
             player_tex.Dispose();
             bullet_tex.Dispose();
             gameover_tex.Dispose();
@@ -339,27 +342,29 @@ namespace molyjam
             spriteBatch.Draw(background, background.Bounds, Color.White);
 
             foreach(Civilian c in allPeople) {
-                if (player.Target.Equals(c))
-                {
-                    if (c.Shot)
-                        targetBorder.SetData(new[] { Color.Red });
-                    else
-                        targetBorder.SetData(new[] { Color.White });
-                    Rectangle border = c.getDrawArea();
-                    border.X -= 5;
-                    border.Y -= 5;
-                    border.Width += 10;
-                    border.Height += 10;
-                    //spriteBatch.Draw(targetBorder, border, Color.White);
-                }
-                double rotationAngle = 0.0f;
+                 double rotationAngle = 0.0f;
                 if (c.Heading.X >= 0)
                     rotationAngle = Math.Acos(c.Heading.Y);
                 else
                     rotationAngle = (Math.PI * 2) - Math.Acos(c.Heading.Y);
-                //spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
-                spriteBatch.Draw(c.Texture, c.getDrawArea(), null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * c.Texture.Width, c.Heading.Y + 0.5f * c.Texture.Height), SpriteEffects.None, 0);
-                //spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
+                //if (player.Target.Equals(c))
+                //{
+                //    if (c.Shot)
+                //        targetBorder.SetData(new[] { Color.Red });
+                //    else
+                //        targetBorder.SetData(new[] { Color.White });
+                //    Rectangle border = c.getDrawArea();
+                //    border.X -= 5;
+                //    border.Y -= 5;
+                //    border.Width += 10;
+                //    border.Height += 10;
+                //    spriteBatch.Draw(targetBorder, border, null, Color.White, (float)rotationAngle, 
+                //        new Vector2(c.Heading.X + 0.5f * border.Width, c.Heading.Y + 0.5f * border.Height), SpriteEffects.None, 0);
+                //}
+                Texture2D civTexToUse = c.Texture;
+                if (player.Target.Equals(c) && !(c is Player))
+                    civTexToUse = civ_tex1_aimed;
+                spriteBatch.Draw(civTexToUse, c.getDrawArea(), null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * civTexToUse.Width, c.Heading.Y + 0.5f * civTexToUse.Height), SpriteEffects.None, 0);
             }
 
             foreach (EnvironmentalObject e in envObjects)
