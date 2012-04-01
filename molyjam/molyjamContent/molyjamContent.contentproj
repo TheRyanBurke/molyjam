@@ -128,6 +128,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="pointing.png">
+      <Name>pointing</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="ShotOnce.png">
       <Name>ShotOnce</Name>
       <Importer>TextureImporter</Importer>

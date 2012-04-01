@@ -42,6 +42,7 @@ namespace molyjam
         Texture2D player_tex;
         Texture2D player_shot_once;
         Texture2D player_shot_twice;
+        Texture2D player_pointing;
         Texture2D bullet_tex;
         Texture2D gameover_tex;
         Texture2D gameover_suicide_tex;
@@ -100,6 +101,7 @@ namespace molyjam
             player_tex = Content.Load<Texture2D>("Suicide");
             player_shot_once = Content.Load<Texture2D>("ShotOnce");
             player_shot_twice = Content.Load<Texture2D>("ShotTwice");
+            player_pointing = Content.Load<Texture2D>("pointing");
             civ_tex1 = Content.Load<Texture2D>("civ1-32");
             civ_tex1_aimed = Content.Load<Texture2D>("civ1-32-aimed");
             bullet_tex = Content.Load<Texture2D>("bullet");
@@ -180,6 +182,7 @@ namespace molyjam
             civ_tex1.Dispose();
             civ_tex1_aimed.Dispose();
             player_tex.Dispose();
+            player_pointing.Dispose();
             bullet_tex.Dispose();
             gameover_tex.Dispose();
             gameover_suicide_tex.Dispose();
@@ -401,16 +404,31 @@ namespace molyjam
                         civTexToUse = civ_tex1_aimed;
                     if (c is Player)
                     {
-                        if (((Player)c).Health == 3)
+                        if (!((Player)c).Target.Equals(c))
+                        {
+                            civTexToUse = player_pointing;
+                            
+                        }
+                        else if (((Player)c).Health == 3)
+                        {
                             civTexToUse = player_tex;
+                            rotationAngle = 0;
+                        }
                         else if (((Player)c).Health == 2)
+                        {
                             civTexToUse = player_shot_once;
+                            rotationAngle = 0;
+                        }
                         else if (((Player)c).Health < 2)
+                        {
                             civTexToUse = player_shot_twice;
+                            rotationAngle = 0;
+                        }
                     }
                     Rectangle destRect = c.getDrawArea();
                     destRect.X += c.Texture.Width / 2;
                     destRect.Y += c.Texture.Height / 2;
+
                     spriteBatch.Draw(civTexToUse, destRect, null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * civTexToUse.Width, c.Heading.Y + 0.5f * civTexToUse.Height), SpriteEffects.None, 0);
                 }
 
