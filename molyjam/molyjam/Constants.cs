@@ -12,6 +12,7 @@ namespace molyjam
 
         public static float BULLET_SPEED = 8f;
         public static int SHOOT_INTERVAL = 5000; //ms
+        public static int SHOOT_INTERVAL_ADJUSTMENT = 500; //ms
 
         public static int DEFAULT_BULLET_RICOCHETS = 1;
         public static float BULLET_INERTIAL_INFLUENCE = 0.2f;

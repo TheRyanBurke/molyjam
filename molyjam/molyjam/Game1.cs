@@ -46,6 +46,7 @@ namespace molyjam
 
         bool gameover;
         bool gameover_suicide;
+        bool isStateKeyPressed;
 
         int shootTimer;
 
@@ -145,6 +146,7 @@ namespace molyjam
 
             gameover = false;
             gameover_suicide = false;
+            isStateKeyPressed = false;
 
             score = 0;
             combo = 0;
@@ -216,8 +218,25 @@ namespace molyjam
                     case Keys.Right:
                         leftStick += new Vector2(player.KeyboardSpeed, 0f);
                         break;
+                    case Keys.OemPlus:
+                        if (!isStateKeyPressed)
+                            Constants.SHOOT_INTERVAL += Constants.SHOOT_INTERVAL_ADJUSTMENT;
+                        isStateKeyPressed = true;
+                        //System.Diagnostics.Debug.WriteLine("State key on, shoot interval: {0}", Constants.SHOOT_INTERVAL);
+                        break;
+                    case Keys.OemMinus:
+                        if (!isStateKeyPressed && Constants.SHOOT_INTERVAL > Constants.SHOOT_INTERVAL_ADJUSTMENT)
+                            Constants.SHOOT_INTERVAL -= Constants.SHOOT_INTERVAL_ADJUSTMENT;
+                        isStateKeyPressed = true;
+                        //System.Diagnostics.Debug.WriteLine("State key on, shoot interval: {0}", Constants.SHOOT_INTERVAL);
+                        break;
                 }
             }
+            if (!keyList.Contains(Keys.OemPlus) && !keyList.Contains(Keys.OemMinus) && isStateKeyPressed)
+                isStateKeyPressed = false; //System.Diagnostics.Debug.WriteLine("State key off, shoot interval: {0}", Constants.SHOOT_INTERVAL); }
+
+            if (leftStick != Vector2.Zero) 
+                player.Heading = leftStick; // Make sure heading reflects current stick direction
             // Keyboard movement block end 
             #endregion
 
@@ -331,10 +350,16 @@ namespace molyjam
                     border.Y -= 5;
                     border.Width += 10;
                     border.Height += 10;
-                    spriteBatch.Draw(targetBorder, border, Color.White);
+                    //spriteBatch.Draw(targetBorder, border, Color.White);
                 }
-
-                spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
+                double rotationAngle = 0.0f;
+                if (c.Heading.X >= 0)
+                    rotationAngle = Math.Acos(c.Heading.Y);
+                else
+                    rotationAngle = (Math.PI * 2) - Math.Acos(c.Heading.Y);
+                //spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
+                spriteBatch.Draw(c.Texture, c.getDrawArea(), null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * c.Texture.Width, c.Heading.Y + 0.5f * c.Texture.Height), SpriteEffects.None, 0);
+                //spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
             }
 
             foreach (EnvironmentalObject e in envObjects)
