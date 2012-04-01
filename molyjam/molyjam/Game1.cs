@@ -269,7 +269,7 @@ namespace molyjam
 
                     Vector2 bulletHeading = player.shoot();
                     if (!(player.Target is Player))
-                        bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, Constants.DEFAULT_BULLET_RICOCHETS));
+                        bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, Constants.DEFAULT_BULLET_RICOCHETS,leftStick));
                     else
                         player.getShot();
                 }

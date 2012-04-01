@@ -21,10 +21,10 @@ namespace molyjam
         int ricochetsRemaining;
 
 
-        public Bullet(Vector2 origin, Texture2D texture, Vector2 heading, int ricochets)
+        public Bullet(Vector2 origin, Texture2D texture, Vector2 heading, int ricochets, Vector2 platformInertia)
             : base(origin, texture)
         {
-            Heading = heading;
+            Heading = heading + Constants.BULLET_INERTIAL_INFLUENCE*platformInertia;
             ricochetsRemaining = ricochets;
             lifetime = Stopwatch.StartNew();
         }
