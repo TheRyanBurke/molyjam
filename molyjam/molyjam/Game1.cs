@@ -115,10 +115,7 @@ namespace molyjam
 
             civilians.Clear();
             civilians.Add(new Civilian(new Vector2(100f, 300f), civ_tex1));
-//            civilians.Add(new Civilian(new Vector2(340f, 210f), civ_tex1)); // This guy always reports a hit on the environment Entity until the Player pushes him out.
             civilians.Add(new Civilian(new Vector2(320f, 290f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(200f, 400f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(300f, 400f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(400f, 400f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(500f, 400f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(600f, 400f), civ_tex1));
@@ -127,8 +124,8 @@ namespace molyjam
             bullets = new List<Bullet>();
 
             envObjects.Clear();
-            envObjects.Add(new EnvironmentalObject(new Vector2(850f, 210f), env_tex, new Rectangle(0, 0, 300, 130)));
-            envObjects.Add(new EnvironmentalObject(new Vector2(80f, 390f), env_tex, new Rectangle(0, 0, 300, 130)));
+            envObjects.Add(new EnvironmentalObject(new Vector2(850f, 210f), env_tex, new Rectangle(0, 0, 300, 130))); // car
+            envObjects.Add(new EnvironmentalObject(new Vector2(80f, 390f), env_tex, new Rectangle(0, 0, 300, 130))); // car
             //envObjects.Add(new EnvironmentalObject(new Vector2(0f, 0f), env_tex, new Rectangle(0, 0, 438, 193)));
             //envObjects.Add(new EnvironmentalObject(new Vector2(0f, 504f), env_tex, new Rectangle(0, 0, 446, 220)));
 
@@ -275,10 +272,8 @@ namespace molyjam
                 }
                 bullets = remainingBullets;
 
-                //bullet fire should be last event in engine loop
-                
+                //bullet fire should be last event in engine loop                
                 shootTimer += gameTime.ElapsedGameTime.Milliseconds;
-                //Console.WriteLine("ms: " + gameTime.TotalGameTime.Milliseconds + " -- shoottimer: " + shootTimer);
                 if (shootTimer > Constants.SHOOT_INTERVAL)
                 {
                     shootTimer = 0;
@@ -353,7 +348,6 @@ namespace molyjam
 
             foreach (Bullet b in bullets)
             {
-                //spriteBatch.Draw(b.Texture, b.getDrawArea(), null, Color.White, (float)(Math.Atan2(b.Origin.Y, b.Origin.X) / (2 * Math.PI)), b.Origin, SpriteEffects.None, 0);
                 double rotationAngle = 0.0f;
                 if (b.Heading.X >= 0)
                     rotationAngle = Math.Acos(b.Heading.Y);
