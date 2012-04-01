@@ -20,6 +20,9 @@ namespace molyjam
         SpriteBatch spriteBatch;
         SpriteFont font;
 
+ 
+        Song bgm;
+
         List<Civilian> civilians;
         Player player;
         List<Bullet> bullets;
@@ -28,17 +31,19 @@ namespace molyjam
         Texture2D targetBorder;
         Texture2D blah;
 
-        int score = 0;
-        int combo = 0;
-        int combo_counter = 0;
+        int score;
+        int combo;
+        int combo_counter;
 
         Texture2D civ_tex1;
         Texture2D player_tex;
         Texture2D bullet_tex;
         Texture2D gameover_tex;
+        Texture2D gameover_suicide_tex;
         Texture2D env_tex;
 
         bool gameover;
+        bool gameover_suicide;
 
         int shootTimer;
 
@@ -56,6 +61,10 @@ namespace molyjam
         /// </summary>
         protected override void Initialize()
         {
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.ApplyChanges();
+
             // TODO: Add your initialization logic here
             civilians = new List<Civilian>();
             bullets = new List<Bullet>();
@@ -77,10 +86,11 @@ namespace molyjam
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            player_tex = Content.Load<Texture2D>("player-32");
+            player_tex = Content.Load<Texture2D>("player");
             civ_tex1 = Content.Load<Texture2D>("civ1-32");
             bullet_tex = Content.Load<Texture2D>("bullet");
             gameover_tex = Content.Load<Texture2D>("gameover");
+            gameover_suicide_tex = Content.Load<Texture2D>("gameover-suicide");
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
@@ -89,6 +99,9 @@ namespace molyjam
             env_tex.SetData(new[] { Color.Tan });
 
             font = Content.Load<SpriteFont>("SpriteFont1");
+
+            bgm = Content.Load<Song>("molyjam-bgm");
+
 
             initGameObjects();
         }
@@ -119,6 +132,14 @@ namespace molyjam
             font = Content.Load<SpriteFont>("SpriteFont1");
 
             gameover = false;
+            gameover_suicide = false;
+
+            score = 0;
+            combo = 0;
+            combo_counter = 0;
+
+            MediaPlayer.IsRepeating = true;
+            //MediaPlayer.Play(bgm);
         }
 
         /// <summary>
@@ -244,6 +265,8 @@ namespace molyjam
 
                 if (numDeadCivilians >= Constants.MAX_DEAD_CIVILIANS || player.Health <= 0)
                 {
+                    if (player.Health <= 0)
+                        gameover_suicide = true;
                     gameover = true;
                 }
 
@@ -334,7 +357,10 @@ namespace molyjam
             {
                 Rectangle area = gameover_tex.Bounds;
                 area.Offset(Constants.screenWidth / 2, Constants.screenHeight / 2);
-                spriteBatch.Draw(gameover_tex, area, Color.White);
+                if(gameover_suicide)
+                    spriteBatch.Draw(gameover_suicide_tex, area, Color.White);
+                else
+                    spriteBatch.Draw(gameover_tex, area, Color.White);
             }
 
             spriteBatch.End();
