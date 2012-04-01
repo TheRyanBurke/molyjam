@@ -20,6 +20,9 @@ namespace molyjam
         SpriteBatch spriteBatch;
         SpriteFont font;
 
+ 
+        Song bgm;
+
         List<Civilian> civilians;
         Player player;
         List<Bullet> bullets;
@@ -56,6 +59,10 @@ namespace molyjam
         /// </summary>
         protected override void Initialize()
         {
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.ApplyChanges();
+
             // TODO: Add your initialization logic here
             civilians = new List<Civilian>();
             bullets = new List<Bullet>();
@@ -77,7 +84,7 @@ namespace molyjam
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            player_tex = Content.Load<Texture2D>("player-32");
+            player_tex = Content.Load<Texture2D>("player");
             civ_tex1 = Content.Load<Texture2D>("civ1-32");
             bullet_tex = Content.Load<Texture2D>("bullet");
             gameover_tex = Content.Load<Texture2D>("gameover");
@@ -89,6 +96,9 @@ namespace molyjam
             env_tex.SetData(new[] { Color.Tan });
 
             font = Content.Load<SpriteFont>("SpriteFont1");
+
+            bgm = Content.Load<Song>("molyjam-bgm");
+
 
             initGameObjects();
         }
@@ -119,6 +129,9 @@ namespace molyjam
             font = Content.Load<SpriteFont>("SpriteFont1");
 
             gameover = false;
+
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(bgm);
         }
 
         /// <summary>
