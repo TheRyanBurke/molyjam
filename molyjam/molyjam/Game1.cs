@@ -323,7 +323,12 @@ namespace molyjam
             foreach (Bullet b in bullets)
             {
                 //spriteBatch.Draw(b.Texture, b.getDrawArea(), null, Color.White, (float)(Math.Atan2(b.Origin.Y, b.Origin.X) / (2 * Math.PI)), b.Origin, SpriteEffects.None, 0);
-                spriteBatch.Draw(b.Texture, b.getDrawArea(), Color.White);
+                double rotationAngle = 0.0f;
+                if (b.Heading.X >= 0)
+                    rotationAngle = Math.Acos(b.Heading.Y);
+                else
+                    rotationAngle = (Math.PI*2)-Math.Acos(b.Heading.Y);
+                spriteBatch.Draw(b.Texture, b.getDrawArea(), null, Color.White, (float)rotationAngle,new Vector2(5+b.Heading.X,5+b.Heading.Y),SpriteEffects.None,0);
             }
 
 
