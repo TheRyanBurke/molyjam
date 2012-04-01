@@ -49,8 +49,7 @@ namespace molyjam
                 if (isNotPlayerOrBullet() && !this.Equals(e) && this.detectCollision(e))
                 {
                     Heading = Vector2.Negate(Heading);
-                    origin = oldPosition + Heading*vector.Length();
-                    System.Diagnostics.Debug.WriteLine("Hit");
+                    Origin = oldPosition + Heading*vector.Length();
                 }
             }
             // Hit detection for walls
@@ -58,11 +57,13 @@ namespace molyjam
             {
                 Vector2 wallBounce = new Vector2(-1, 0);
                 heading *= wallBounce;
+                Origin = oldPosition;
             }
             if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height))
             {
                 Vector2 wallBounce = new Vector2(0,-1);
                 heading *= wallBounce;
+                Origin = oldPosition;
             }
 
         }

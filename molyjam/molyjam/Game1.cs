@@ -113,8 +113,8 @@ namespace molyjam
 
             civilians.Clear();
             civilians.Add(new Civilian(new Vector2(100f, 300f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(340f, 210f), civ_tex1));
-//            civilians.Add(new Civilian(new Vector2(320f, 190f), civ_tex1));
+//            civilians.Add(new Civilian(new Vector2(340f, 210f), civ_tex1)); // This guy always reports a hit on the environment Entity until the Player pushes him out.
+            civilians.Add(new Civilian(new Vector2(320f, 190f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(200f, 300f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(300f, 300f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(400f, 350f), civ_tex1));
