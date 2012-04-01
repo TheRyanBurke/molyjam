@@ -22,6 +22,7 @@ namespace molyjam
 
  
         Song bgm;
+        Song introbgm;
         SoundEffect gunshot;
         
 
@@ -39,16 +40,21 @@ namespace molyjam
         Texture2D civ_tex1;
         Texture2D civ_tex1_aimed;
         Texture2D player_tex;
+        Texture2D player_shot_once;
+        Texture2D player_shot_twice;
         Texture2D bullet_tex;
         Texture2D gameover_tex;
         Texture2D gameover_suicide_tex;
         Texture2D env_tex;
         Texture2D background;
         Texture2D truck_red;
+        Texture2D intro;
 
         bool gameover;
         bool gameover_suicide;
         bool isStateKeyPressed;
+
+        bool introState;
 
         int shootTimer;
 
@@ -91,7 +97,9 @@ namespace molyjam
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            player_tex = Content.Load<Texture2D>("player-adam");
+            player_tex = Content.Load<Texture2D>("Suicide");
+            player_shot_once = Content.Load<Texture2D>("ShotOnce");
+            player_shot_twice = Content.Load<Texture2D>("ShotTwice");
             civ_tex1 = Content.Load<Texture2D>("civ1-32");
             civ_tex1_aimed = Content.Load<Texture2D>("civ1-32-aimed");
             bullet_tex = Content.Load<Texture2D>("bullet");
@@ -99,6 +107,7 @@ namespace molyjam
             gameover_suicide_tex = Content.Load<Texture2D>("gameover-suicide");
             background = Content.Load<Texture2D>("background");
             truck_red = Content.Load<Texture2D>("truck-red");
+            intro = Content.Load<Texture2D>("intro");
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
@@ -109,13 +118,14 @@ namespace molyjam
             font = Content.Load<SpriteFont>("SpriteFont1");
 
             bgm = Content.Load<Song>("cautious-path");
+            introbgm = Content.Load<Song>("molyjam-bgm");
 
             gunshot = Content.Load<SoundEffect>("colt45");
             Constants.ricochet = Content.Load<SoundEffect>("bulletricochet-01");
             Constants.scream = Content.Load<SoundEffect>("WilhelmScream");
 
-
-            initGameObjects();
+            introState = true;
+            MediaPlayer.Play(introbgm);
         }
 
         protected void initGameObjects()
@@ -181,6 +191,9 @@ namespace molyjam
             gunshot.Dispose();
             Constants.scream.Dispose();
             Constants.ricochet.Dispose();
+            intro.Dispose();
+            introbgm.Dispose();
+
         }
 
         /// <summary>
@@ -199,56 +212,62 @@ namespace molyjam
             if (gps.Buttons.Back == ButtonState.Pressed || kbs.GetPressedKeys().Contains(Keys.Escape))
                 this.Exit();
 
-            if (kbs.GetPressedKeys().Contains(Keys.D1))
+            if (kbs.GetPressedKeys().Contains(Keys.D1) || gps.IsButtonDown(Buttons.Start))
+            {
                 initGameObjects();
-
-
-            #region KeyboardMovementBlock
-            // Keyboard movement block. Added temporarily for debugging.
-            // Does not reset leftStick between updates, since it is local and initialized to Vector2.Zero (gps.Thumbsticks.Left with no gamepad)
-            Keys[] keyList = Keyboard.GetState().GetPressedKeys();
-            if (keyList.Length == 0)
-                leftStick *= player.KeyboardSpeed;
-            for (int i = 0; i < keyList.Length; i++)
-            {
-                switch (keyList[i])
-                {
-                    case Keys.Down:
-                        leftStick += new Vector2(0f, -1 * player.KeyboardSpeed);
-                        break;
-                    case Keys.Up:
-                        leftStick += new Vector2(0f, player.KeyboardSpeed);
-                        break;
-                    case Keys.Left:
-                        leftStick += new Vector2(-1 * player.KeyboardSpeed, 0f);
-                        break;
-                    case Keys.Right:
-                        leftStick += new Vector2(player.KeyboardSpeed, 0f);
-                        break;
-                    case Keys.OemPlus:
-                        if (!isStateKeyPressed)
-                            Constants.SHOOT_INTERVAL += Constants.SHOOT_INTERVAL_ADJUSTMENT;
-                        isStateKeyPressed = true;
-                        //System.Diagnostics.Debug.WriteLine("State key on, shoot interval: {0}", Constants.SHOOT_INTERVAL);
-                        break;
-                    case Keys.OemMinus:
-                        if (!isStateKeyPressed && Constants.SHOOT_INTERVAL > Constants.SHOOT_INTERVAL_ADJUSTMENT)
-                            Constants.SHOOT_INTERVAL -= Constants.SHOOT_INTERVAL_ADJUSTMENT;
-                        isStateKeyPressed = true;
-                        //System.Diagnostics.Debug.WriteLine("State key on, shoot interval: {0}", Constants.SHOOT_INTERVAL);
-                        break;
-                }
+                introState = false;
             }
-            if (!keyList.Contains(Keys.OemPlus) && !keyList.Contains(Keys.OemMinus) && isStateKeyPressed)
-                isStateKeyPressed = false; //System.Diagnostics.Debug.WriteLine("State key off, shoot interval: {0}", Constants.SHOOT_INTERVAL); }
 
-            if (leftStick != Vector2.Zero) 
-                player.Heading = leftStick; // Make sure heading reflects current stick direction
-            // Keyboard movement block end 
-            #endregion
 
-            if (!gameover)
+            
+
+            if (!gameover && !introState)
             {
+
+                #region KeyboardMovementBlock
+                // Keyboard movement block. Added temporarily for debugging.
+                // Does not reset leftStick between updates, since it is local and initialized to Vector2.Zero (gps.Thumbsticks.Left with no gamepad)
+                Keys[] keyList = Keyboard.GetState().GetPressedKeys();
+                if (keyList.Length == 0)
+                    leftStick *= player.KeyboardSpeed;
+                for (int i = 0; i < keyList.Length; i++)
+                {
+                    switch (keyList[i])
+                    {
+                        case Keys.Down:
+                            leftStick += new Vector2(0f, -1 * player.KeyboardSpeed);
+                            break;
+                        case Keys.Up:
+                            leftStick += new Vector2(0f, player.KeyboardSpeed);
+                            break;
+                        case Keys.Left:
+                            leftStick += new Vector2(-1 * player.KeyboardSpeed, 0f);
+                            break;
+                        case Keys.Right:
+                            leftStick += new Vector2(player.KeyboardSpeed, 0f);
+                            break;
+                        case Keys.OemPlus:
+                            if (!isStateKeyPressed)
+                                Constants.SHOOT_INTERVAL += Constants.SHOOT_INTERVAL_ADJUSTMENT;
+                            isStateKeyPressed = true;
+                            //System.Diagnostics.Debug.WriteLine("State key on, shoot interval: {0}", Constants.SHOOT_INTERVAL);
+                            break;
+                        case Keys.OemMinus:
+                            if (!isStateKeyPressed && Constants.SHOOT_INTERVAL > Constants.SHOOT_INTERVAL_ADJUSTMENT)
+                                Constants.SHOOT_INTERVAL -= Constants.SHOOT_INTERVAL_ADJUSTMENT;
+                            isStateKeyPressed = true;
+                            //System.Diagnostics.Debug.WriteLine("State key on, shoot interval: {0}", Constants.SHOOT_INTERVAL);
+                            break;
+                    }
+                }
+                if (!keyList.Contains(Keys.OemPlus) && !keyList.Contains(Keys.OemMinus) && isStateKeyPressed)
+                    isStateKeyPressed = false; //System.Diagnostics.Debug.WriteLine("State key off, shoot interval: {0}", Constants.SHOOT_INTERVAL); }
+
+                if (leftStick != Vector2.Zero)
+                    player.Heading = leftStick; // Make sure heading reflects current stick direction
+                // Keyboard movement block end 
+                #endregion
+
                 List<Entity> allEntities = new List<Entity>();
                 allEntities.AddRange(civilians);
                 allEntities.AddRange(bullets);
@@ -343,100 +362,118 @@ namespace molyjam
             #region drawStuffs
             spriteBatch.Begin();
 
-            spriteBatch.Draw(background, background.Bounds, Color.White);
-
-            foreach(Civilian c in allPeople) {
-                 double rotationAngle = 0.0f;
-                if (c.Heading.X >= 0)
-                    rotationAngle = Math.Acos(c.Heading.Y);
-                else
-                    rotationAngle = (Math.PI * 2) - Math.Acos(c.Heading.Y);
-                //spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White); //No rotation
-
-                
-                //spriteBatch.Draw(c.Texture, destRect, null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * c.Texture.Width, c.Heading.Y + 0.5f * c.Texture.Height), SpriteEffects.None, 0);
-                // for debugging - shows origin
-                //spriteBatch.Draw(bullet_tex, new Rectangle((int)c.Origin.X, (int)c.Origin.Y, bullet_tex.Width, bullet_tex.Height), Color.White);
-                //if (player.Target.Equals(c))
-                //{
-                //    if (c.Shot)
-                //        targetBorder.SetData(new[] { Color.Red });
-                //    else
-                //        targetBorder.SetData(new[] { Color.White });
-                //    Rectangle border = c.getDrawArea();
-                //    border.X -= 5;
-                //    border.Y -= 5;
-                //    border.Width += 10;
-                //    border.Height += 10;
-                //    spriteBatch.Draw(targetBorder, border, null, Color.White, (float)rotationAngle, 
-                //        new Vector2(c.Heading.X + 0.5f * border.Width, c.Heading.Y + 0.5f * border.Height), SpriteEffects.None, 0);
-                //}
-                Texture2D civTexToUse = c.Texture;
-                if (player.Target.Equals(c) && !(c is Player))
-                    civTexToUse = civ_tex1_aimed;
-                Rectangle destRect = c.getDrawArea();
-                destRect.X += c.Texture.Width / 2;
-                destRect.Y += c.Texture.Height / 2;
-                spriteBatch.Draw(civTexToUse, destRect, null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * civTexToUse.Width, c.Heading.Y + 0.5f * civTexToUse.Height), SpriteEffects.None, 0);
-            }
-
-            foreach (EnvironmentalObject e in envObjects)
+            if (introState)
             {
-                spriteBatch.Draw(e.Texture, e.getDrawArea(), Color.White);
+                spriteBatch.Draw(intro, intro.Bounds, Color.White);
             }
-
-            foreach (Bullet b in bullets)
+            else
             {
-                double rotationAngle = 0.0f;
-                if (b.Heading.X >= 0)
-                    rotationAngle = Math.Acos(b.Heading.Y);
+
+                spriteBatch.Draw(background, background.Bounds, Color.White);
+
+                foreach (Civilian c in allPeople)
+                {
+                    double rotationAngle = 0.0f;
+                    if (c.Heading.X >= 0)
+                        rotationAngle = Math.Acos(c.Heading.Y);
+                    else
+                        rotationAngle = (Math.PI * 2) - Math.Acos(c.Heading.Y);
+                    //spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White); //No rotation
+
+
+                    //spriteBatch.Draw(c.Texture, destRect, null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * c.Texture.Width, c.Heading.Y + 0.5f * c.Texture.Height), SpriteEffects.None, 0);
+                    // for debugging - shows origin
+                    //spriteBatch.Draw(bullet_tex, new Rectangle((int)c.Origin.X, (int)c.Origin.Y, bullet_tex.Width, bullet_tex.Height), Color.White);
+                    //if (player.Target.Equals(c))
+                    //{
+                    //    if (c.Shot)
+                    //        targetBorder.SetData(new[] { Color.Red });
+                    //    else
+                    //        targetBorder.SetData(new[] { Color.White });
+                    //    Rectangle border = c.getDrawArea();
+                    //    border.X -= 5;
+                    //    border.Y -= 5;
+                    //    border.Width += 10;
+                    //    border.Height += 10;
+                    //    spriteBatch.Draw(targetBorder, border, null, Color.White, (float)rotationAngle, 
+                    //        new Vector2(c.Heading.X + 0.5f * border.Width, c.Heading.Y + 0.5f * border.Height), SpriteEffects.None, 0);
+                    //}
+                    Texture2D civTexToUse = c.Texture;
+                    if (player.Target.Equals(c) && !(c is Player))
+                        civTexToUse = civ_tex1_aimed;
+                    if (c is Player)
+                    {
+                        if (((Player)c).Health == 3)
+                            civTexToUse = player_tex;
+                        else if (((Player)c).Health == 2)
+                            civTexToUse = player_shot_once;
+                        else if (((Player)c).Health < 2)
+                            civTexToUse = player_shot_twice;
+                    }
+                    Rectangle destRect = c.getDrawArea();
+                    destRect.X += c.Texture.Width / 2;
+                    destRect.Y += c.Texture.Height / 2;
+                    spriteBatch.Draw(civTexToUse, destRect, null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * civTexToUse.Width, c.Heading.Y + 0.5f * civTexToUse.Height), SpriteEffects.None, 0);
+                }
+
+                foreach (EnvironmentalObject e in envObjects)
+                {
+                    spriteBatch.Draw(e.Texture, e.getDrawArea(), Color.White);
+                }
+
+                foreach (Bullet b in bullets)
+                {
+                    double rotationAngle = 0.0f;
+                    if (b.Heading.X >= 0)
+                        rotationAngle = Math.Acos(b.Heading.Y);
+                    else
+                        rotationAngle = (Math.PI * 2) - Math.Acos(b.Heading.Y);
+                    spriteBatch.Draw(b.Texture, b.getDrawArea(), null, Color.White, (float)rotationAngle, new Vector2(5 + b.Heading.X, 5 + b.Heading.Y), SpriteEffects.None, 0);
+                }
+
+
+                spriteBatch.DrawString(font, "Score: " + score.ToString(), new Vector2(5, 5), Color.Black);
+                spriteBatch.DrawString(font, "Combo:" + combo.ToString(), new Vector2(200, 5), Color.Black);
+                Rectangle combo1_border = new Rectangle(205, 30, 10, 10);
+                Rectangle combo2_border = new Rectangle(225, 30, 10, 10);
+                Rectangle combo3_border = new Rectangle(245, 30, 10, 10);
+                Rectangle combo1 = new Rectangle(207, 32, 6, 6);
+                Rectangle combo2 = new Rectangle(227, 32, 6, 6);
+                Rectangle combo3 = new Rectangle(247, 32, 6, 6);
+                spriteBatch.Draw(blah, combo1_border, Color.Black);
+                spriteBatch.Draw(blah, combo2_border, Color.Black);
+                spriteBatch.Draw(blah, combo3_border, Color.Black);
+                if (combo_counter > 0)
+                    spriteBatch.Draw(blah, combo1, Color.Red);
                 else
-                    rotationAngle = (Math.PI*2)-Math.Acos(b.Heading.Y);
-                spriteBatch.Draw(b.Texture, b.getDrawArea(), null, Color.White, (float)rotationAngle,new Vector2(5+b.Heading.X,5+b.Heading.Y),SpriteEffects.None,0);
-            }
-
-
-            spriteBatch.DrawString(font, "Score: " + score.ToString(), new Vector2(5, 5), Color.Black);
-            spriteBatch.DrawString(font, "Combo:" + combo.ToString(), new Vector2(200, 5), Color.Black);
-            Rectangle combo1_border = new Rectangle(205, 30, 10, 10);
-            Rectangle combo2_border = new Rectangle(225, 30, 10, 10);
-            Rectangle combo3_border = new Rectangle(245, 30, 10, 10);
-            Rectangle combo1 = new Rectangle(207, 32, 6, 6);
-            Rectangle combo2 = new Rectangle(227, 32, 6, 6);
-            Rectangle combo3 = new Rectangle(247, 32, 6, 6);
-            spriteBatch.Draw(blah, combo1_border, Color.Black);
-            spriteBatch.Draw(blah, combo2_border, Color.Black);
-            spriteBatch.Draw(blah, combo3_border, Color.Black);
-            if(combo_counter > 0)
-                spriteBatch.Draw(blah, combo1, Color.Red);
-            else
-                spriteBatch.Draw(blah, combo1, Color.White);
-            if (combo_counter > 1)
-                spriteBatch.Draw(blah, combo2, Color.Red);
-            else
-                spriteBatch.Draw(blah, combo2, Color.White);
-            if (combo_counter > 2)
-                spriteBatch.Draw(blah, combo3, Color.Red);
-            else
-                spriteBatch.Draw(blah, combo3, Color.White);
-
-            float fraction = (float)shootTimer / (float)Constants.SHOOT_INTERVAL;
-            Rectangle timer = new Rectangle(400, 30, (int)(100 - (100 * fraction)), 15);
-            spriteBatch.Draw(blah, timer, Color.Red);
-
-            String health = "Health: " + player.Health;
-            spriteBatch.DrawString(font, health, new Vector2(5, 25), Color.Black);
-
-            if (gameover)
-            {
-                Rectangle area = gameover_tex.Bounds;
-                area.Offset(Constants.screenWidth / 2, Constants.screenHeight / 2);
-                if(gameover_suicide)
-                    spriteBatch.Draw(gameover_suicide_tex, area, Color.White);
+                    spriteBatch.Draw(blah, combo1, Color.White);
+                if (combo_counter > 1)
+                    spriteBatch.Draw(blah, combo2, Color.Red);
                 else
-                    spriteBatch.Draw(gameover_tex, area, Color.White);
-            }
+                    spriteBatch.Draw(blah, combo2, Color.White);
+                if (combo_counter > 2)
+                    spriteBatch.Draw(blah, combo3, Color.Red);
+                else
+                    spriteBatch.Draw(blah, combo3, Color.White);
 
+                float fraction = (float)shootTimer / (float)Constants.SHOOT_INTERVAL;
+                Rectangle timer = new Rectangle(400, 30, (int)(100 - (100 * fraction)), 15);
+                spriteBatch.Draw(blah, timer, Color.Red);
+
+                String health = "Health: " + player.Health;
+                spriteBatch.DrawString(font, health, new Vector2(5, 25), Color.Black);
+
+                if (gameover)
+                {
+                    Rectangle area = gameover_tex.Bounds;
+                    area.Offset(Constants.screenWidth / 2 - area.Width/2, Constants.screenHeight / 2 - area.Height/2);
+                    if (gameover_suicide)
+                        spriteBatch.Draw(gameover_suicide_tex, area, Color.White);
+                    else
+                        spriteBatch.Draw(gameover_tex, area, Color.White);
+                }
+
+            }
             spriteBatch.End();
             #endregion drawStuffs
             base.Draw(gameTime);
