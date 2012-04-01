@@ -16,8 +16,10 @@ namespace molyjam
             get { return health; }
             set 
             {
-                Speed = Constants.PLAYER_SPEED_HEALTH[(value - 1) % Constants.PLAYER_SPEED_HEALTH.Length];
-                keyboardSpeed = Constants.PLAYER_SPEED_HEALTH[(value - 1) % Constants.PLAYER_SPEED_HEALTH.Length];
+                // Clamps index to range (0..PLAYER_SPEED_HEALTH.Length-1) to keep indices in bounds.
+                int i = value < 0 ? 0 : (value > (Constants.PLAYER_SPEED_HEALTH.Length - 1) ? Constants.PLAYER_SPEED_HEALTH.Length - 1 : value);
+                Speed = Constants.PLAYER_SPEED_HEALTH[i];
+                keyboardSpeed = Constants.PLAYER_SPEED_HEALTH[i];
                 health = value; 
             }
         }

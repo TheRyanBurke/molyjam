@@ -82,7 +82,6 @@ namespace molyjam
 
         public void moveCivilian(List<Entity> entities)
         {
-            
             float modHeadingX = 1;
             float modHeadingY = 1;
             bool entityCollision = false;

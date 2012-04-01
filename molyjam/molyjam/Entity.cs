@@ -43,6 +43,7 @@ namespace molyjam
             origin.X = MathHelper.Clamp(origin.X + vector.X, 0, Constants.screenWidth);
             origin.Y = MathHelper.Clamp(origin.Y - vector.Y, 0, Constants.screenHeight);
 
+            // Hit detection with other entities (Not players or bullets)
             foreach(Entity e in entities)
             {
              //   if (isCivilianNotPlayer() && !this.Equals(e) && this.detectCollision(e))
@@ -63,17 +64,31 @@ namespace molyjam
             return area;
         }
 
+        public Rectangle getBoundingBox()
+        {
+            return new Rectangle((int)Origin.X, (int)Origin.Y, Texture.Width, Texture.Height);
+        }
+
         public bool detectCollision(Entity e)
         {
-            bool collision = false;
-            Rectangle thisArea = getDrawArea();
-            e.getDrawArea().Intersects(ref thisArea, out collision);
-            return collision;
+            //bool collision = false;
+            //Rectangle thisArea = getDrawArea();
+            //e.getDrawArea().Intersects(ref thisArea, out collision);
+            //e.getBoundingBox().Intersects(ref thisArea, out collision);
+            //return collision;
+            Rectangle thisArea = getBoundingBox();
+            return e.getBoundingBox().Intersects(thisArea);
+
         }
 
         public bool isCivilianNotPlayer()
         {
             return (this is Civilian && !(this is Player));
+        }
+
+        public bool isNotPlayerOrBullet()
+        {
+            return (!(this is Player) && !(this is Bullet));
         }
     }
 }
