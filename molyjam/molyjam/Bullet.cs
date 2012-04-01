@@ -47,6 +47,7 @@ namespace molyjam
                     modHeadingX = -1;
                 }
                 ricochetsRemaining--;
+                Constants.ricochet.Play();
             }
             if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height))
             {
@@ -55,6 +56,7 @@ namespace molyjam
                     modHeadingY = -1;
                 }
                 ricochetsRemaining--;
+                Constants.ricochet.Play();
             }
 
             foreach (Entity e in entities)
@@ -64,11 +66,13 @@ namespace molyjam
                     if (e is Player && lifetime.Elapsed.Milliseconds > 500)
                     {
                         ((Player)e).getShot();
+                        Constants.scream.Play();
                         return true;
                     }
                     if (e is Civilian && !(e is Player))
                     {
                         ((Civilian)e).getShot();
+                        Constants.scream.Play();
                         return true;
                     }
                     //TODO may need to revisit so bullet can ricochet off non-civilian entities
@@ -83,6 +87,7 @@ namespace molyjam
                                 modHeadingX = -1;
                         }
                         ricochetsRemaining--;
+                        Constants.ricochet.Play();
                     }
                 }
             }

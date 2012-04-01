@@ -22,6 +22,8 @@ namespace molyjam
 
  
         Song bgm;
+        SoundEffect gunshot;
+        
 
         List<Civilian> civilians;
         Player player;
@@ -102,7 +104,11 @@ namespace molyjam
 
             font = Content.Load<SpriteFont>("SpriteFont1");
 
-            bgm = Content.Load<Song>("molyjam-bgm");
+            bgm = Content.Load<Song>("cautious-path");
+
+            gunshot = Content.Load<SoundEffect>("colt45");
+            Constants.ricochet = Content.Load<SoundEffect>("bulletricochet-01");
+            Constants.scream = Content.Load<SoundEffect>("WilhelmScream");
 
 
             initGameObjects();
@@ -147,7 +153,7 @@ namespace molyjam
             combo_counter = 0;
 
             MediaPlayer.IsRepeating = true;
-            //MediaPlayer.Play(bgm);
+            MediaPlayer.Play(bgm);
         }
 
         /// <summary>
@@ -166,6 +172,10 @@ namespace molyjam
             gameover_suicide_tex.Dispose();
             env_tex.Dispose();
             background.Dispose();
+            bgm.Dispose();
+            gunshot.Dispose();
+            Constants.scream.Dispose();
+            Constants.ricochet.Dispose();
         }
 
         /// <summary>
@@ -286,6 +296,8 @@ namespace molyjam
                         bullets.Add(new Bullet(player.Origin, bullet_tex, bulletHeading, Constants.DEFAULT_BULLET_RICOCHETS,leftStick));
                     else
                         player.getShot();
+
+                    gunshot.Play();
                 }
 
                 int numDeadCivilians = 0;
