@@ -336,6 +336,9 @@ namespace molyjam
             else
                 spriteBatch.Draw(blah, combo3, Color.White);
 
+            float fraction = (float)shootTimer / (float)Constants.SHOOT_INTERVAL;
+            Rectangle timer = new Rectangle(400, 30, (int)(100 - (100 * fraction)), 15);
+            spriteBatch.Draw(blah, timer, Color.Red);
 
             String health = "Health: " + player.Health;
             spriteBatch.DrawString(font, health, new Vector2(5, 25), Color.White);

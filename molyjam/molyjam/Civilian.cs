@@ -72,7 +72,7 @@ namespace molyjam
             shot = false;
 
             Random gen = new Random();
-            headingChangeMillis = gen.Next(500,1000);
+            headingChangeMillis = Constants.gen.Next(500,1000);
         }
 
         public void getShot()
@@ -117,19 +117,20 @@ namespace molyjam
 
                 if (lifeTime.ElapsedMilliseconds >= headingChangeMillis)
                 {
-                    Random gen = new Random();
+                    //Random gen = new Random();
                     double rnd;
                     Vector2 rot;
                     #region Civilian_Behavior_Rules
                     switch (this.civilianState)
                     {
                         case CivilianStates.Default:
-                            rnd = gen.Next(0, 46) - 22.5;
+                            rnd = Constants.gen.Next(0, 46) - 22.5;
+                            Console.WriteLine(rnd);
                             rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
                             rot = this.Heading;
                             break;
                         case CivilianStates.Alarmed:
-                            rnd = gen.Next(0, 91) - 45;
+                            rnd = Constants.gen.Next(0, 91) - 45;
                             rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
                             rot = this.Origin - player.Origin;
                             break;
@@ -143,7 +144,7 @@ namespace molyjam
                     rot.X = (rot.X * (float)Math.Cos(rnd)) + (rot.Y * (float)Math.Sin(rnd));
                     rot.Y = (rot.Y * (float)Math.Cos(rnd)) - (rot.X * (float)Math.Sin(rnd));
                     this.Heading = rot;
-                    headingChangeMillis = lifeTime.ElapsedMilliseconds + gen.Next(500, 1000);
+                    headingChangeMillis = lifeTime.ElapsedMilliseconds + Constants.gen.Next(500, 1000);
                 }
 
                 moveCivilian(entities);
