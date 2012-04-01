@@ -39,9 +39,11 @@ namespace molyjam
         Texture2D player_tex;
         Texture2D bullet_tex;
         Texture2D gameover_tex;
+        Texture2D gameover_suicide_tex;
         Texture2D env_tex;
 
         bool gameover;
+        bool gameover_suicide;
 
         int shootTimer;
 
@@ -88,6 +90,7 @@ namespace molyjam
             civ_tex1 = Content.Load<Texture2D>("civ1-32");
             bullet_tex = Content.Load<Texture2D>("bullet");
             gameover_tex = Content.Load<Texture2D>("gameover");
+            gameover_suicide_tex = Content.Load<Texture2D>("gameover-suicide");
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
@@ -129,9 +132,10 @@ namespace molyjam
             font = Content.Load<SpriteFont>("SpriteFont1");
 
             gameover = false;
+            gameover_suicide = false;
 
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.Play(bgm);
+            //MediaPlayer.Play(bgm);
         }
 
         /// <summary>
@@ -257,6 +261,8 @@ namespace molyjam
 
                 if (numDeadCivilians >= Constants.MAX_DEAD_CIVILIANS || player.Health <= 0)
                 {
+                    if (player.Health <= 0)
+                        gameover_suicide = true;
                     gameover = true;
                 }
 
@@ -347,7 +353,10 @@ namespace molyjam
             {
                 Rectangle area = gameover_tex.Bounds;
                 area.Offset(Constants.screenWidth / 2, Constants.screenHeight / 2);
-                spriteBatch.Draw(gameover_tex, area, Color.White);
+                if(gameover_suicide)
+                    spriteBatch.Draw(gameover_suicide_tex, area, Color.White);
+                else
+                    spriteBatch.Draw(gameover_tex, area, Color.White);
             }
 
             spriteBatch.End();
