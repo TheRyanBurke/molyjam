@@ -66,7 +66,9 @@ namespace molyjam
 
         public Rectangle getBoundingBox()
         {
-            return new Rectangle((int)Origin.X, (int)Origin.Y, Texture.Width, Texture.Height);
+            double offset = Math.Cos(this.Heading.Y) * Math.Sqrt(2);
+            return new Rectangle((int)Origin.X-(int)(0.5*offset), (int)Origin.Y-(int)(0.5*offset), Texture.Width+(int)offset, Texture.Height+(int)offset);
+            //return new Rectangle((int)Origin.X, (int)Origin.Y, Texture.Width, Texture.Height);
         }
 
         public bool detectCollision(Entity e)

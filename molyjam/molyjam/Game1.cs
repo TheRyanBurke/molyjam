@@ -347,7 +347,6 @@ namespace molyjam
                     rotationAngle = (Math.PI * 2) - Math.Acos(c.Heading.Y);
                 //spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
                 spriteBatch.Draw(c.Texture, c.getDrawArea(), null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * c.Texture.Width, c.Heading.Y + 0.5f * c.Texture.Height), SpriteEffects.None, 0);
-                //spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White);
             }
 
             foreach (EnvironmentalObject e in envObjects)
