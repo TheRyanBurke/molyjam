@@ -66,7 +66,14 @@ namespace molyjam
 
         public Rectangle getBoundingBox()
         {
-            double offset = Math.Cos(this.Heading.Y) * Math.Sqrt(2);
+            double offset = (this.Heading.X) * Math.Sqrt(2);
+            //System.Diagnostics.Debug.WriteLine(offset);
+            //if (this is Player)
+            //{
+            //    System.Diagnostics.Debug.WriteLine(Math.Acos(this.Heading.Y));
+            //    System.Diagnostics.Debug.WriteLine(offsetX);
+            //    System.Diagnostics.Debug.WriteLine(offsetY);
+            //}
             return new Rectangle((int)Origin.X-(int)(0.5*offset), (int)Origin.Y-(int)(0.5*offset), Texture.Width+(int)offset, Texture.Height+(int)offset);
             //return new Rectangle((int)Origin.X, (int)Origin.Y, Texture.Width, Texture.Height);
         }
