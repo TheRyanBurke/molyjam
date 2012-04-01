@@ -124,6 +124,14 @@ namespace molyjam
             Constants.ricochet = Content.Load<SoundEffect>("bulletricochet-01");
             Constants.scream = Content.Load<SoundEffect>("WilhelmScream");
 
+            targetBorder = new Texture2D(GraphicsDevice, 1, 1);
+            targetBorder.SetData(new[] { Color.White });
+
+            blah = new Texture2D(GraphicsDevice, 1, 1);
+            blah.SetData(new[] { Color.White });
+
+            font = Content.Load<SpriteFont>("SpriteFont1");
+
             introState = true;
             MediaPlayer.Play(introbgm);
         }
@@ -141,22 +149,12 @@ namespace molyjam
             civilians.Add(new Civilian(new Vector2(600f, 400f), civ_tex1));
 
             bullets.Clear();
-            bullets = new List<Bullet>();
 
             envObjects.Clear();
             envObjects.Add(new EnvironmentalObject(new Vector2(850f, 210f), truck_red, new Rectangle(0, 0, 300, 130))); // car
             envObjects.Add(new EnvironmentalObject(new Vector2(80f, 390f), truck_red, new Rectangle(0, 0, 300, 130))); // car
             //envObjects.Add(new EnvironmentalObject(new Vector2(0f, 0f), env_tex, new Rectangle(0, 0, 438, 193)));
             //envObjects.Add(new EnvironmentalObject(new Vector2(0f, 504f), env_tex, new Rectangle(0, 0, 446, 220)));
-
-
-            targetBorder = new Texture2D(GraphicsDevice, 1, 1);
-            targetBorder.SetData(new[] { Color.White });
-
-            blah = new Texture2D(GraphicsDevice, 1, 1);
-            blah.SetData(new[] { Color.White });
-
-            font = Content.Load<SpriteFont>("SpriteFont1");
 
             gameover = false;
             gameover_suicide = false;

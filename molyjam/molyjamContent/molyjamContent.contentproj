@@ -128,13 +128,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="intro.png">
-      <Name>intro</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="ShotOnce.png">
       <Name>ShotOnce</Name>
       <Importer>TextureImporter</Importer>
@@ -147,6 +140,13 @@
     </Compile>
     <Compile Include="Suicide.png">
       <Name>Suicide</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="intro.png">
+      <Name>intro</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
