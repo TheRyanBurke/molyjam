@@ -207,6 +207,8 @@ namespace molyjam
             // Keyboard movement block. Added temporarily for debugging.
             // Does not reset leftStick between updates, since it is local and initialized to Vector2.Zero (gps.Thumbsticks.Left with no gamepad)
             Keys[] keyList = Keyboard.GetState().GetPressedKeys();
+            if (keyList.Length == 0)
+                leftStick *= player.KeyboardSpeed;
             for (int i = 0; i < keyList.Length; i++)
             {
                 switch (keyList[i])
