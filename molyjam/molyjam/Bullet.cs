@@ -56,14 +56,10 @@ namespace molyjam
                 }
                 ricochetsRemaining--;
             }
-            Vector2 newHeading = new Vector2(modHeadingX * Heading.X, modHeadingY * Heading.Y);
-            Heading = newHeading;
-            if (ricochetsRemaining < 0)
-                expired = true;
 
             foreach (Entity e in entities)
             {
-                if (!(e.Equals(this)) && e.detectCollision(this))
+                if (!(e.Equals(this)) && this.detectCollision(e))
                 {
                     if (e is Player && lifetime.Elapsed.Milliseconds > 500)
                     {
@@ -76,8 +72,24 @@ namespace molyjam
                         return true;
                     }
                     //TODO may need to revisit so bullet can ricochet off non-civilian entities
+                    if (e is EnvironmentalObject)
+                    {
+                        if (ricochetsRemaining > 0)
+                        {
+                            //TODO probably need a better way to determine how the bullet should ricochet, though this works for now
+                            if (Origin.X > e.Origin.X && Origin.X < e.Origin.X + ((EnvironmentalObject)e).getDrawArea().Width-4)
+                                modHeadingY = -1;
+                            else
+                                modHeadingX = -1;
+                        }
+                        ricochetsRemaining--;
+                    }
                 }
             }
+            Vector2 newHeading = new Vector2(modHeadingX * Heading.X, modHeadingY * Heading.Y);
+            Heading = newHeading;
+            if (ricochetsRemaining < 0)
+                expired = true;
 
             return expired;
         }

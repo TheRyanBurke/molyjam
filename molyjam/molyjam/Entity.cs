@@ -77,6 +77,8 @@ namespace molyjam
             //e.getBoundingBox().Intersects(ref thisArea, out collision);
             //return collision;
             Rectangle thisArea = getBoundingBox();
+            if(e is EnvironmentalObject)
+                return ((EnvironmentalObject)e).getDrawArea().Intersects(thisArea);
             return e.getBoundingBox().Intersects(thisArea);
 
         }
