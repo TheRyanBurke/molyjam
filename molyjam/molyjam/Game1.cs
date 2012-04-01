@@ -90,7 +90,7 @@ namespace molyjam
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            player_tex = Content.Load<Texture2D>("player");
+            player_tex = Content.Load<Texture2D>("player-adam");
             civ_tex1 = Content.Load<Texture2D>("civ1-32");
             civ_tex1_aimed = Content.Load<Texture2D>("civ1-32-aimed");
             bullet_tex = Content.Load<Texture2D>("bullet");
