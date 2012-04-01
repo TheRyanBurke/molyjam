@@ -44,6 +44,7 @@ namespace molyjam
         Texture2D gameover_suicide_tex;
         Texture2D env_tex;
         Texture2D background;
+        Texture2D truck_red;
 
         bool gameover;
         bool gameover_suicide;
@@ -97,6 +98,7 @@ namespace molyjam
             gameover_tex = Content.Load<Texture2D>("gameover");
             gameover_suicide_tex = Content.Load<Texture2D>("gameover-suicide");
             background = Content.Load<Texture2D>("background");
+            truck_red = Content.Load<Texture2D>("truck-red");
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
@@ -132,8 +134,8 @@ namespace molyjam
             bullets = new List<Bullet>();
 
             envObjects.Clear();
-            envObjects.Add(new EnvironmentalObject(new Vector2(850f, 210f), env_tex, new Rectangle(0, 0, 300, 130))); // car
-            envObjects.Add(new EnvironmentalObject(new Vector2(80f, 390f), env_tex, new Rectangle(0, 0, 300, 130))); // car
+            envObjects.Add(new EnvironmentalObject(new Vector2(850f, 210f), truck_red, new Rectangle(0, 0, 300, 130))); // car
+            envObjects.Add(new EnvironmentalObject(new Vector2(80f, 390f), truck_red, new Rectangle(0, 0, 300, 130))); // car
             //envObjects.Add(new EnvironmentalObject(new Vector2(0f, 0f), env_tex, new Rectangle(0, 0, 438, 193)));
             //envObjects.Add(new EnvironmentalObject(new Vector2(0f, 504f), env_tex, new Rectangle(0, 0, 446, 220)));
 
@@ -378,7 +380,7 @@ namespace molyjam
 
             foreach (EnvironmentalObject e in envObjects)
             {
-                spriteBatch.Draw(e.Texture, e.getDrawArea(), Color.Tan);
+                spriteBatch.Draw(e.Texture, e.getDrawArea(), Color.White);
             }
 
             foreach (Bullet b in bullets)

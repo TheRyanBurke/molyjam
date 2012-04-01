@@ -98,10 +98,10 @@ namespace molyjam
             }
             if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width) || entityCollision)
             //if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width))
-                modHeadingX = -1;
+                modHeadingX = -2;
             if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height) || entityCollision)
             //if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height))
-                modHeadingY = -1;
+                modHeadingY = -2;
             Vector2 newHeading = new Vector2(modHeadingX * Heading.X, modHeadingY * Heading.Y);
             //if (entityCollision && entityCollided is EnvironmentalObject)
             //{
