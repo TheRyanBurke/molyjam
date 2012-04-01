@@ -17,10 +17,12 @@ namespace molyjam
             set 
             {
                 // Clamps index to range (0..PLAYER_SPEED_HEALTH.Length-1) to keep indices in bounds.
-                int i = value < 0 ? 0 : (value > (Constants.PLAYER_SPEED_HEALTH.Length - 1) ? Constants.PLAYER_SPEED_HEALTH.Length - 1 : value);
-                Speed = Constants.PLAYER_SPEED_HEALTH[i];
-                keyboardSpeed = Constants.PLAYER_SPEED_HEALTH[i];
-                health = value; 
+                // int i = value < 0 ? 0 : (value > (Constants.PLAYER_SPEED_HEALTH.Length - 1) ? Constants.PLAYER_SPEED_HEALTH.Length - 1 : value);
+                health = value;
+                value = (int)MathHelper.Clamp(value-1,0,Constants.PLAYER_SPEED_HEALTH.Length - 1); // more clear
+                Speed = Constants.PLAYER_SPEED_HEALTH[value];
+                KeyboardSpeed = Constants.PLAYER_SPEED_HEALTH[value];
+                System.Diagnostics.Debug.WriteLine("Current health, speeds (H,S,K): {0}  {1}  {2}",Health, Speed, KeyboardSpeed);
             }
         }
 
@@ -42,7 +44,8 @@ namespace molyjam
             : base(origin, texture)
         {
             target = this;
-            health = 3;
+            Health = 3;
+            Heading = new Vector2(0, 1);
         }
 
         public void move(Vector2 vector, List<Entity> entities)
