@@ -28,19 +28,19 @@ namespace molyjam
         List<Bullet> bullets;
         List<EnvironmentalObject> envObjects;
 
-        Texture2D targetBorder;
-        Texture2D blah;
-
         int score;
         int combo;
         int combo_counter;
 
+        Texture2D targetBorder;
+        Texture2D blah;
         Texture2D civ_tex1;
         Texture2D player_tex;
         Texture2D bullet_tex;
         Texture2D gameover_tex;
         Texture2D gameover_suicide_tex;
         Texture2D env_tex;
+        Texture2D background;
 
         bool gameover;
         bool gameover_suicide;
@@ -91,6 +91,7 @@ namespace molyjam
             bullet_tex = Content.Load<Texture2D>("bullet");
             gameover_tex = Content.Load<Texture2D>("gameover");
             gameover_suicide_tex = Content.Load<Texture2D>("gameover-suicide");
+            background = Content.Load<Texture2D>("background");
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
@@ -109,23 +110,27 @@ namespace molyjam
         protected void initGameObjects()
         {
             shootTimer = 0;
-            player = new Player(new Vector2(50f, 50f), player_tex);
+            player = new Player(new Vector2(1050f, 400f), player_tex);
 
             civilians.Clear();
             civilians.Add(new Civilian(new Vector2(100f, 300f), civ_tex1));
 //            civilians.Add(new Civilian(new Vector2(340f, 210f), civ_tex1)); // This guy always reports a hit on the environment Entity until the Player pushes him out.
-            civilians.Add(new Civilian(new Vector2(320f, 190f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(200f, 300f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(300f, 300f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(400f, 300f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(500f, 300f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(600f, 300f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(320f, 290f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(200f, 400f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(300f, 400f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(400f, 400f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(500f, 400f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(600f, 400f), civ_tex1));
 
             bullets.Clear();
             bullets = new List<Bullet>();
 
             envObjects.Clear();
-            envObjects.Add(new EnvironmentalObject(new Vector2(350f, 225f), env_tex, new Rectangle(0, 0, 100, 100)));
+            envObjects.Add(new EnvironmentalObject(new Vector2(850f, 210f), env_tex, new Rectangle(0, 0, 300, 130)));
+            envObjects.Add(new EnvironmentalObject(new Vector2(80f, 390f), env_tex, new Rectangle(0, 0, 300, 130)));
+            //envObjects.Add(new EnvironmentalObject(new Vector2(0f, 0f), env_tex, new Rectangle(0, 0, 438, 193)));
+            //envObjects.Add(new EnvironmentalObject(new Vector2(0f, 504f), env_tex, new Rectangle(0, 0, 446, 220)));
+
 
             targetBorder = new Texture2D(GraphicsDevice, 1, 1);
             targetBorder.SetData(new[] { Color.White });
@@ -154,6 +159,14 @@ namespace molyjam
         {
             // TODO: Unload any non ContentManager content here
             targetBorder.Dispose();
+            blah.Dispose();
+            civ_tex1.Dispose();
+            player_tex.Dispose();
+            bullet_tex.Dispose();
+            gameover_tex.Dispose();
+            gameover_suicide_tex.Dispose();
+            env_tex.Dispose();
+            background.Dispose();
         }
 
         /// <summary>
@@ -297,6 +310,8 @@ namespace molyjam
             #region drawStuffs
             spriteBatch.Begin();
 
+            spriteBatch.Draw(background, background.Bounds, Color.White);
+
             foreach(Civilian c in allPeople) {
                 if (player.Target.Equals(c))
                 {
@@ -361,7 +376,7 @@ namespace molyjam
             spriteBatch.Draw(blah, timer, Color.Red);
 
             String health = "Health: " + player.Health;
-            spriteBatch.DrawString(font, health, new Vector2(5, 25), Color.White);
+            spriteBatch.DrawString(font, health, new Vector2(5, 25), Color.Black);
 
             if (gameover)
             {
