@@ -25,5 +25,8 @@ namespace molyjam
 
         public static float[] PLAYER_SPEED_HEALTH = {1.0f,2.5f,4.0f};
         public static Random gen = new Random();
+
+        public static Microsoft.Xna.Framework.Audio.SoundEffect ricochet;
+        public static Microsoft.Xna.Framework.Audio.SoundEffect scream;
     }
 }
