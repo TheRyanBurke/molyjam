@@ -14,7 +14,12 @@ namespace molyjam
         public int Health
         {
             get { return health; }
-            set { health = value; }
+            set 
+            {
+                Speed = Constants.PLAYER_SPEED_HEALTH[(value - 1) % Constants.PLAYER_SPEED_HEALTH.Length];
+                keyboardSpeed = Constants.PLAYER_SPEED_HEALTH[(value - 1) % Constants.PLAYER_SPEED_HEALTH.Length];
+                health = value; 
+            }
         }
 
         float keyboardSpeed = 5.0f;
@@ -83,7 +88,7 @@ namespace molyjam
         public new void getShot()
         {
             Shot = true;
-            this.health--;
+            Health--;
         }
 
     }
