@@ -85,22 +85,47 @@ namespace molyjam
             float modHeadingX = 1;
             float modHeadingY = 1;
             bool entityCollision = false;
+            Entity entityCollided = null;
             foreach (Entity e in entities)
             {
                 if (!this.Equals(e) && this.detectCollision(e))
                 { 
                     entityCollision = true;
+                    entityCollided = e;
                     break;
                 }
 
             }
             if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width) || entityCollision)
+            //if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width))
                 modHeadingX = -1;
             if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height) || entityCollision)
+            //if (Origin.Y <= 0 || Origin.Y >= (Constants.screenHeight - Texture.Height))
                 modHeadingY = -1;
             Vector2 newHeading = new Vector2(modHeadingX * Heading.X, modHeadingY * Heading.Y);
+            //if (entityCollision && entityCollided is EnvironmentalObject)
+            //{
+            //    //Rectangle civilianBox = this.getBoundingBox();
+            //    //Vector2 civilianVector = new Vector2(civilianBox.X, civilianBox.Y);
+            //    Vector2 civilianVector = this.Origin;
+            //    civilianVector.X += this.Texture.Width / 2;
+            //    civilianVector.Y += this.Texture.Height / 2;
+            //    EnvironmentalObject envEntity = (EnvironmentalObject)entityCollided;
+            //    Vector2 entityVector = new Vector2(envEntity.Origin.X + envEntity.Area.Width / 2, envEntity.Origin.Y + envEntity.Area.Height / 2);
+            //    newHeading = civilianVector - entityVector;
+            //}
             Heading = newHeading;
             this.moveEntity(Heading * speed, entities);
+
+            #region Civilian_Unstick
+            //foreach (Entity e in entities)
+            //{
+            //    if (e is EnvironmentalObject && this.detectCollision(e) )
+            //    {
+            //        npc - center of object
+            //    }
+            //}
+            #endregion
 
         }
 
