@@ -22,7 +22,7 @@ namespace molyjam
                 value = (int)MathHelper.Clamp(value-1,0,Constants.PLAYER_SPEED_HEALTH.Length - 1); // more clear
                 Speed = Constants.PLAYER_SPEED_HEALTH[value];
                 KeyboardSpeed = Constants.PLAYER_SPEED_HEALTH[value];
-                System.Diagnostics.Debug.WriteLine("Current health, speeds (H,S,K): {0}  {1}  {2}",Health, Speed, KeyboardSpeed);
+                //System.Diagnostics.Debug.WriteLine("Current health, speeds (H,S,K): {0}  {1}  {2}",Health, Speed, KeyboardSpeed);
             }
         }
 

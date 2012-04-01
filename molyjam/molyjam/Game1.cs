@@ -347,6 +347,12 @@ namespace molyjam
                     rotationAngle = Math.Acos(c.Heading.Y);
                 else
                     rotationAngle = (Math.PI * 2) - Math.Acos(c.Heading.Y);
+                //spriteBatch.Draw(c.Texture, c.getDrawArea(), Color.White); //No rotation
+
+                
+                //spriteBatch.Draw(c.Texture, destRect, null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * c.Texture.Width, c.Heading.Y + 0.5f * c.Texture.Height), SpriteEffects.None, 0);
+                // for debugging - shows origin
+                //spriteBatch.Draw(bullet_tex, new Rectangle((int)c.Origin.X, (int)c.Origin.Y, bullet_tex.Width, bullet_tex.Height), Color.White);
                 //if (player.Target.Equals(c))
                 //{
                 //    if (c.Shot)
@@ -364,7 +370,10 @@ namespace molyjam
                 Texture2D civTexToUse = c.Texture;
                 if (player.Target.Equals(c) && !(c is Player))
                     civTexToUse = civ_tex1_aimed;
-                spriteBatch.Draw(civTexToUse, c.getDrawArea(), null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * civTexToUse.Width, c.Heading.Y + 0.5f * civTexToUse.Height), SpriteEffects.None, 0);
+                Rectangle destRect = c.getDrawArea();
+                destRect.X += c.Texture.Width / 2;
+                destRect.Y += c.Texture.Height / 2;
+                spriteBatch.Draw(civTexToUse, destRect, null, Color.White, (float)rotationAngle, new Vector2(c.Heading.X + 0.5f * civTexToUse.Width, c.Heading.Y + 0.5f * civTexToUse.Height), SpriteEffects.None, 0);
             }
 
             foreach (EnvironmentalObject e in envObjects)
