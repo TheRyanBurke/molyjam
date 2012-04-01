@@ -115,7 +115,9 @@ namespace molyjam
             civilians.Add(new Civilian(new Vector2(100f, 300f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(200f, 300f), civ_tex1));
             civilians.Add(new Civilian(new Vector2(300f, 300f), civ_tex1));
-            civilians.Add(new Civilian(new Vector2(400f, 350f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(400f, 300f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(500f, 300f), civ_tex1));
+            civilians.Add(new Civilian(new Vector2(600f, 300f), civ_tex1));
 
             bullets.Clear();
             bullets = new List<Bullet>();

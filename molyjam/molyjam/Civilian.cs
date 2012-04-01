@@ -56,19 +56,18 @@ namespace molyjam
         }
 
         public Civilian(Vector2 origin, Texture2D texture)
-            : this(origin, new Vector2(0,1), CivilianStates.Default, texture)
+            : this(origin, new Vector2(Constants.gen.Next(-100, 100) * .01f, Constants.gen.Next(-100, 100) * .01f), CivilianStates.Default, texture)
         {
 
         }
 
-        public Civilian(Vector2 origin, Vector2 heading, CivilianStates state, Texture2D texture, float speed = 1.0f) // Constructor Override, allows the state to be set
+        public Civilian(Vector2 origin, Vector2 heading, CivilianStates state, Texture2D texture) // Constructor Override, allows the state to be set
             : base(origin, texture)
         {
             lifeTime = Stopwatch.StartNew();
 
             this.Heading = heading;
-            this.civilianState = state;
-            this.speed = speed;
+            CivilianState = state;
             shot = false;
 
             Random gen = new Random();
@@ -90,8 +89,11 @@ namespace molyjam
             foreach (Entity e in entities)
             {
                 if (!this.Equals(e) && this.detectCollision(e))
+                { 
                     entityCollision = true;
-                break;
+                    break;
+                }
+
             }
             if (Origin.X <= 0 || Origin.X >= (Constants.screenWidth - Texture.Width) || entityCollision)
                 modHeadingX = -1;
@@ -125,7 +127,6 @@ namespace molyjam
                     {
                         case CivilianStates.Default:
                             rnd = Constants.gen.Next(0, 46) - 22.5;
-                            Console.WriteLine(rnd);
                             rnd *= Math.PI / 180;                   // Needs to convert degrees to radians. Perhaps a static helper method in constants?
                             rot = this.Heading;
                             break;

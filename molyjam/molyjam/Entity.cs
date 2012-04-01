@@ -45,8 +45,8 @@ namespace molyjam
 
             foreach(Entity e in entities)
             {
-                if (isCivilianNotPlayer() && !this.Equals(e) && this.detectCollision(e))
-                    origin = oldPosition;
+             //   if (isCivilianNotPlayer() && !this.Equals(e) && this.detectCollision(e))
+             //       origin = oldPosition;
             }
 
         }
