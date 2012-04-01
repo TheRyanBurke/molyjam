@@ -31,9 +31,9 @@ namespace molyjam
         Texture2D targetBorder;
         Texture2D blah;
 
-        int score = 0;
-        int combo = 0;
-        int combo_counter = 0;
+        int score;
+        int combo;
+        int combo_counter;
 
         Texture2D civ_tex1;
         Texture2D player_tex;
@@ -133,6 +133,10 @@ namespace molyjam
 
             gameover = false;
             gameover_suicide = false;
+
+            score = 0;
+            combo = 0;
+            combo_counter = 0;
 
             MediaPlayer.IsRepeating = true;
             //MediaPlayer.Play(bgm);
